@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { getLatestSiteFile, getSiteFiles, getSiteHtml, isValidSiteFileName } from "@/lib/sites";
+import { Viewer } from "./viewer";
 
 type PageProps = {
   searchParams?: Promise<{
@@ -25,23 +26,16 @@ export default async function Home({ searchParams }: PageProps) {
 
   return (
     <main className="shell">
-      <section className="hero">
-        <div>
-          <p className="eyebrow">Sites archive</p>
-          <h1 className="title">HTML files from `sites/`</h1>
-          <p className="subtitle">
-            Browse every `{".html"}` file that matches `YYYY-MM-DD_HH-MM.html`, open one inline, or jump
-            straight to the newest file at `/recent`.
-          </p>
-        </div>
-        <div className="badge">{files.length} file{files.length === 1 ? "" : "s"} indexed</div>
-      </section>
+      <header className="header">
+        <h1 className="header-title">Sites <em>Archive</em></h1>
+        <span className="header-meta">{files.length} file{files.length === 1 ? "" : "s"}</span>
+      </header>
 
       <section className="layout">
-        <aside className="panel sidebar">
-          <h2>Directory</h2>
+        <aside className="sidebar">
+          <div className="sidebar-label">Directory</div>
           {files.length === 0 ? (
-            <div className="small-note">Add HTML files to `sites/` and refresh.</div>
+            <div className="no-files">No HTML files found.</div>
           ) : (
             <ul className="file-list">
               {files.map((file) => (
@@ -56,28 +50,11 @@ export default async function Home({ searchParams }: PageProps) {
           )}
         </aside>
 
-        <section className="panel viewer">
-          <div className="topline">
-            <h2>{selected ? selected.name : "No file selected"}</h2>
-            {selected ? <div className="small-note">{selected.displayDate}</div> : null}
-          </div>
-
-          {selected && html ? (
-            <iframe
-              className="viewer-frame"
-              title={selected.name}
-              srcDoc={html}
-              sandbox="allow-forms allow-modals allow-popups allow-same-origin allow-scripts"
-            />
-          ) : (
-            <div className="empty-state">
-              <div>
-                <p>No matching HTML file found yet.</p>
-                <p className="small-note">Create one in `sites/` using the filename format above.</p>
-              </div>
-            </div>
-          )}
-        </section>
+        <Viewer
+          name={selected?.name ?? null}
+          date={selected?.displayDate ?? null}
+          html={html}
+        />
       </section>
     </main>
   );
