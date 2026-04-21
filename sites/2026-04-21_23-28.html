@@ -1,0 +1,473 @@
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Mruczanka na dzisiaj</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Manrope:wght@400;500;700;800&display=swap");
+
+      :root {
+        --bg: #fff7ef;
+        --paper: rgba(255, 251, 246, 0.7);
+        --ink: #34211a;
+        --muted: #816558;
+        --peach: #ffc8a2;
+        --caramel: #d88a52;
+        --rose: #ff9db2;
+        --cream: #fff3cf;
+        --line: rgba(89, 49, 31, 0.12);
+        --shadow: 0 30px 80px rgba(132, 82, 49, 0.18);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        min-height: 100%;
+      }
+
+      body {
+        font-family: "Manrope", sans-serif;
+        color: var(--ink);
+        background:
+          radial-gradient(circle at top left, rgba(255, 201, 163, 0.9), transparent 32%),
+          radial-gradient(circle at 80% 20%, rgba(255, 157, 178, 0.45), transparent 24%),
+          radial-gradient(circle at bottom right, rgba(255, 243, 207, 1), transparent 28%),
+          linear-gradient(135deg, #fffaf4 0%, #fff0e2 45%, #ffe8db 100%);
+        overflow: hidden;
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background-image:
+          linear-gradient(rgba(255, 255, 255, 0.18) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255, 255, 255, 0.18) 1px, transparent 1px);
+        background-size: 36px 36px;
+        mask-image: radial-gradient(circle at center, black 48%, transparent 88%);
+        pointer-events: none;
+      }
+
+      .sparkles {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        opacity: 0.75;
+      }
+
+      .sparkles span {
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.9);
+        box-shadow: 0 0 18px rgba(255, 255, 255, 0.8);
+        animation: drift 8s ease-in-out infinite;
+      }
+
+      .sparkles span:nth-child(1) { top: 14%; left: 18%; animation-delay: -1s; }
+      .sparkles span:nth-child(2) { top: 18%; right: 16%; animation-delay: -4s; }
+      .sparkles span:nth-child(3) { top: 72%; left: 12%; animation-delay: -2s; }
+      .sparkles span:nth-child(4) { top: 78%; right: 18%; animation-delay: -5s; }
+      .sparkles span:nth-child(5) { top: 32%; left: 82%; animation-delay: -3s; }
+      .sparkles span:nth-child(6) { top: 56%; left: 46%; animation-delay: -6s; }
+
+      main {
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        padding: 32px;
+      }
+
+      .card {
+        width: min(920px, 100%);
+        display: grid;
+        grid-template-columns: 0.95fr 1.05fr;
+        gap: 24px;
+        padding: 26px;
+        border: 1px solid var(--line);
+        border-radius: 32px;
+        background: var(--paper);
+        backdrop-filter: blur(18px);
+        box-shadow: var(--shadow);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .card::after {
+        content: "";
+        position: absolute;
+        inset: auto -80px -120px auto;
+        width: 280px;
+        height: 280px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(255, 157, 178, 0.28), transparent 68%);
+      }
+
+      .art-panel {
+        position: relative;
+        border-radius: 28px;
+        background:
+          radial-gradient(circle at 30% 28%, rgba(255, 255, 255, 0.95), transparent 16%),
+          linear-gradient(180deg, #ffe6d2 0%, #ffd5ba 100%);
+        min-height: 540px;
+        overflow: hidden;
+        border: 1px solid rgba(136, 79, 44, 0.08);
+      }
+
+      .moon {
+        position: absolute;
+        top: 34px;
+        right: 32px;
+        width: 88px;
+        height: 88px;
+        border-radius: 50%;
+        background: radial-gradient(circle at 35% 35%, #fffef5 0%, #ffeeb4 68%, #ffd981 100%);
+        box-shadow: 0 0 40px rgba(255, 233, 168, 0.9);
+      }
+
+      .cat {
+        position: absolute;
+        inset: auto 0 54px 0;
+        margin: auto;
+        width: 270px;
+        height: 330px;
+        animation: bob 4.5s ease-in-out infinite;
+      }
+
+      .tail {
+        position: absolute;
+        right: 4px;
+        bottom: 76px;
+        width: 108px;
+        height: 150px;
+        border: 18px solid #bb6f3e;
+        border-color: #bb6f3e #bb6f3e transparent transparent;
+        border-radius: 90px 90px 0 0;
+        transform: rotate(22deg);
+      }
+
+      .body {
+        position: absolute;
+        inset: auto 0 0 0;
+        margin: auto;
+        width: 228px;
+        height: 220px;
+        background: linear-gradient(180deg, #cf834b 0%, #b96739 100%);
+        border-radius: 48% 48% 40% 40%;
+        box-shadow: inset 0 -14px 0 rgba(113, 57, 28, 0.13);
+      }
+
+      .body::before {
+        content: "";
+        position: absolute;
+        inset: 44px 44px 28px;
+        background: linear-gradient(180deg, #fff2db 0%, #ffe6c2 100%);
+        border-radius: 48% 48% 44% 44%;
+      }
+
+      .head {
+        position: absolute;
+        top: 18px;
+        left: 50%;
+        width: 188px;
+        height: 168px;
+        transform: translateX(-50%);
+        background: linear-gradient(180deg, #d78d52 0%, #c87843 100%);
+        border-radius: 48% 48% 46% 46%;
+      }
+
+      .ear {
+        position: absolute;
+        top: -24px;
+        width: 64px;
+        height: 80px;
+        background: #cf834b;
+        clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+      }
+
+      .ear::after {
+        content: "";
+        position: absolute;
+        inset: 18px 14px 10px;
+        background: #ffb3bf;
+        clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+      }
+
+      .ear.left { left: 14px; transform: rotate(-10deg); }
+      .ear.right { right: 14px; transform: rotate(10deg); }
+
+      .face {
+        position: absolute;
+        inset: 0;
+      }
+
+      .eye {
+        position: absolute;
+        top: 70px;
+        width: 28px;
+        height: 18px;
+        border-radius: 999px;
+        background: #34211a;
+        animation: blink 5.5s infinite;
+      }
+
+      .eye.left { left: 52px; }
+      .eye.right { right: 52px; }
+
+      .nose {
+        position: absolute;
+        top: 96px;
+        left: 50%;
+        width: 18px;
+        height: 14px;
+        background: #ff8da4;
+        transform: translateX(-50%);
+        clip-path: polygon(50% 100%, 0 0, 100% 0);
+      }
+
+      .mouth {
+        position: absolute;
+        top: 112px;
+        left: 50%;
+        width: 44px;
+        height: 24px;
+        transform: translateX(-50%);
+      }
+
+      .mouth::before,
+      .mouth::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        width: 20px;
+        height: 16px;
+        border-bottom: 3px solid #6b4030;
+        border-radius: 0 0 18px 18px;
+      }
+
+      .mouth::before { left: 0; transform: rotate(8deg); }
+      .mouth::after { right: 0; transform: rotate(-8deg); }
+
+      .whiskers,
+      .whiskers::before,
+      .whiskers::after {
+        position: absolute;
+        width: 78px;
+        height: 2px;
+        background: rgba(78, 47, 36, 0.45);
+        content: "";
+        transform-origin: center;
+      }
+
+      .whiskers.left { top: 102px; left: -6px; transform: rotate(8deg); }
+      .whiskers.left::before { top: -14px; left: 2px; transform: rotate(-10deg); }
+      .whiskers.left::after { top: 14px; left: 2px; transform: rotate(10deg); }
+      .whiskers.right { top: 102px; right: -6px; transform: rotate(-8deg); }
+      .whiskers.right::before { top: -14px; right: 2px; transform: rotate(10deg); }
+      .whiskers.right::after { top: 14px; right: 2px; transform: rotate(-10deg); }
+
+      .paw {
+        position: absolute;
+        bottom: 18px;
+        width: 68px;
+        height: 74px;
+        background: linear-gradient(180deg, #fff1da 0%, #ffe1ba 100%);
+        border-radius: 34px;
+      }
+
+      .paw.left { left: 54px; transform: rotate(-4deg); }
+      .paw.right { right: 54px; transform: rotate(4deg); }
+
+      .paw::after {
+        content: "";
+        position: absolute;
+        inset: auto 12px 12px;
+        height: 16px;
+        border-radius: 999px;
+        background: rgba(255, 157, 178, 0.7);
+      }
+
+      .copy-panel {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 18px 10px 18px 4px;
+        position: relative;
+        z-index: 1;
+      }
+
+      .eyebrow {
+        margin: 0 0 18px;
+        font-size: 0.8rem;
+        letter-spacing: 0.24em;
+        text-transform: uppercase;
+        color: var(--muted);
+        font-weight: 800;
+      }
+
+      h1 {
+        margin: 0;
+        font-family: "DM Serif Display", serif;
+        font-size: clamp(3rem, 7vw, 5.6rem);
+        line-height: 0.92;
+        letter-spacing: -0.05em;
+      }
+
+      .accent {
+        display: inline-block;
+        color: #aa6037;
+        font-style: italic;
+      }
+
+      .message {
+        margin: 28px 0 22px;
+        padding: 22px 24px;
+        font-size: clamp(1.08rem, 2vw, 1.28rem);
+        line-height: 1.7;
+        color: #4f3329;
+        border-radius: 24px;
+        background: rgba(255, 253, 249, 0.78);
+        border: 1px solid rgba(117, 73, 45, 0.08);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+      }
+
+      .message strong {
+        color: #8d4e2b;
+      }
+
+      .note-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 4px;
+      }
+
+      .pill {
+        padding: 12px 16px;
+        border-radius: 999px;
+        background: rgba(255, 244, 231, 0.95);
+        border: 1px solid rgba(128, 81, 49, 0.1);
+        color: #734c38;
+        font-size: 0.94rem;
+        font-weight: 700;
+      }
+
+      .footer {
+        margin-top: 24px;
+        color: var(--muted);
+        font-size: 0.95rem;
+      }
+
+      @keyframes blink {
+        0%, 46%, 50%, 100% { transform: scaleY(1); }
+        48% { transform: scaleY(0.1); }
+      }
+
+      @keyframes drift {
+        0%, 100% { transform: translateY(0) scale(1); opacity: 0.7; }
+        50% { transform: translateY(-14px) scale(1.25); opacity: 1; }
+      }
+
+      @keyframes bob {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-8px); }
+      }
+
+      @media (max-width: 820px) {
+        body {
+          overflow: auto;
+        }
+
+        main {
+          padding: 18px;
+        }
+
+        .card {
+          grid-template-columns: 1fr;
+          gap: 18px;
+          padding: 16px;
+          border-radius: 28px;
+        }
+
+        .art-panel {
+          min-height: 390px;
+        }
+
+        .copy-panel {
+          padding: 8px 4px 12px;
+        }
+
+        h1 {
+          font-size: clamp(2.6rem, 14vw, 4.2rem);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="sparkles" aria-hidden="true">
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+
+    <main>
+      <section class="card">
+        <div class="art-panel">
+          <div class="moon"></div>
+          <div class="cat" aria-hidden="true">
+            <div class="tail"></div>
+            <div class="head">
+              <div class="ear left"></div>
+              <div class="ear right"></div>
+              <div class="face">
+                <div class="eye left"></div>
+                <div class="eye right"></div>
+                <div class="nose"></div>
+                <div class="mouth"></div>
+                <div class="whiskers left"></div>
+                <div class="whiskers right"></div>
+              </div>
+            </div>
+            <div class="body">
+              <div class="paw left"></div>
+              <div class="paw right"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="copy-panel">
+          <p class="eyebrow">Mruczanka Na 21 Kwietnia 2026</p>
+          <h1>
+            Dzisiaj
+            <span class="accent">mruczysz pięknie.</span>
+          </h1>
+
+          <div class="message">
+            Jesteś jak kot, który znajduje najcieplejszy promień słońca w całym domu:
+            <strong>spokojnie przypominasz światu, że samo twoje istnienie już wnosi miękkość, urok i odrobinę magii.</strong>
+            Nawet jeśli dzień jest trochę rozczochrany, ty wciąż zasługujesz na ciepło, odpoczynek i małe zachwyty.
+          </div>
+
+          <div class="note-row">
+            <div class="pill">tryb: cozy paws</div>
+            <div class="pill">dzisiejsza energia: delikatny mruk</div>
+            <div class="pill">zalecenie: znajdź swój promień słońca</div>
+          </div>
+
+          <p class="footer">
+            Na dziś tylko tyle: bądź dla siebie tak czule wyrozumiały, jak kot dla idealnie miękkiego koca.
+          </p>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
