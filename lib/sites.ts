@@ -64,7 +64,9 @@ export async function getSiteHtml(name: string) {
 
   const filePath = path.join(SITES_DIR, name);
   try {
-    return await fs.readFile(filePath, "utf8");
+    const raw = await fs.readFile(filePath, "utf8");
+    const scrollFix = `<style>html,body{overflow:auto!important;height:auto!important;min-height:100%!important}</style>`;
+    return raw.replace(/<head([^>]*)>/i, `<head$1>${scrollFix}`);
   } catch {
     return null;
   }
