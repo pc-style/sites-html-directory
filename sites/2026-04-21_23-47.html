@@ -1,0 +1,704 @@
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Poranny Koci Liścik</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Nunito:wght@500;700;800&display=swap");
+
+      :root {
+        --sky-top: #fff3cd;
+        --sky-bottom: #ffd8b5;
+        --paper: rgba(255, 250, 242, 0.76);
+        --ink: #4e3427;
+        --soft-ink: #7f5f4f;
+        --sun: #ffbf47;
+        --rose: #f5a8b8;
+        --cream: #fff5df;
+        --caramel: #c67b49;
+        --caramel-deep: #995734;
+        --mint: #d8efdf;
+        --line: rgba(102, 63, 42, 0.12);
+        --shadow: 0 30px 90px rgba(137, 92, 54, 0.18);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        min-height: 100%;
+      }
+
+      body {
+        font-family: "Nunito", sans-serif;
+        color: var(--ink);
+        background:
+          radial-gradient(circle at top left, rgba(255, 255, 255, 0.9), transparent 24%),
+          radial-gradient(circle at 82% 18%, rgba(255, 228, 190, 0.65), transparent 18%),
+          linear-gradient(180deg, var(--sky-top) 0%, #ffeccf 30%, #ffe4c8 55%, var(--sky-bottom) 100%);
+        overflow: hidden;
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        background:
+          linear-gradient(115deg, rgba(255, 255, 255, 0.42) 0%, rgba(255, 255, 255, 0) 28%),
+          repeating-linear-gradient(
+            90deg,
+            rgba(255, 255, 255, 0.1) 0 1px,
+            transparent 1px 110px
+          );
+        opacity: 0.5;
+      }
+
+      .sun-glow {
+        position: fixed;
+        top: 48px;
+        right: 62px;
+        width: 210px;
+        height: 210px;
+        border-radius: 50%;
+        background:
+          radial-gradient(circle, rgba(255, 238, 188, 0.98) 0%, rgba(255, 196, 71, 0.95) 38%, rgba(255, 191, 71, 0) 72%);
+        filter: blur(6px);
+        animation: glow 5.6s ease-in-out infinite;
+      }
+
+      .sparkles,
+      .hearts {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+      }
+
+      .sparkles span,
+      .hearts span {
+        position: absolute;
+        display: block;
+      }
+
+      .sparkles span {
+        width: 10px;
+        height: 10px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.85);
+        box-shadow: 0 0 18px rgba(255, 255, 255, 0.95);
+        animation: drift 8s ease-in-out infinite;
+      }
+
+      .sparkles span:nth-child(1) { top: 10%; left: 16%; animation-delay: -2s; }
+      .sparkles span:nth-child(2) { top: 21%; left: 72%; animation-delay: -4.5s; }
+      .sparkles span:nth-child(3) { top: 66%; left: 14%; animation-delay: -1s; }
+      .sparkles span:nth-child(4) { top: 74%; right: 12%; animation-delay: -6s; }
+      .sparkles span:nth-child(5) { top: 48%; left: 84%; animation-delay: -3s; }
+
+      .hearts span {
+        color: rgba(245, 168, 184, 0.7);
+        font-size: 20px;
+        animation: float 10s linear infinite;
+      }
+
+      .hearts span:nth-child(1) { left: 7%; bottom: -4%; animation-delay: -1s; }
+      .hearts span:nth-child(2) { left: 25%; bottom: -7%; animation-delay: -7s; }
+      .hearts span:nth-child(3) { right: 21%; bottom: -5%; animation-delay: -4s; }
+      .hearts span:nth-child(4) { right: 8%; bottom: -9%; animation-delay: -9s; }
+
+      main {
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        padding: 28px;
+        position: relative;
+        z-index: 1;
+      }
+
+      .scene {
+        width: min(1080px, 100%);
+        display: grid;
+        grid-template-columns: 1.08fr 0.92fr;
+        gap: 24px;
+        padding: 24px;
+        background: var(--paper);
+        backdrop-filter: blur(18px);
+        border-radius: 36px;
+        border: 1px solid rgba(255, 255, 255, 0.5);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+        position: relative;
+      }
+
+      .scene::after {
+        content: "";
+        position: absolute;
+        inset: auto -60px -80px auto;
+        width: 280px;
+        height: 280px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(216, 239, 223, 0.95), rgba(216, 239, 223, 0));
+        opacity: 0.7;
+      }
+
+      .window-card {
+        position: relative;
+        min-height: 620px;
+        border-radius: 28px;
+        overflow: hidden;
+        border: 1px solid var(--line);
+        background:
+          linear-gradient(180deg, rgba(255, 244, 220, 0.92) 0%, rgba(255, 229, 197, 0.9) 58%, rgba(255, 217, 181, 0.95) 100%);
+      }
+
+      .window-frame {
+        position: absolute;
+        inset: 22px;
+        border-radius: 24px;
+        border: 10px solid rgba(255, 252, 245, 0.92);
+        box-shadow: inset 0 0 0 1px rgba(147, 109, 76, 0.12);
+      }
+
+      .window-frame::before,
+      .window-frame::after {
+        content: "";
+        position: absolute;
+        background: rgba(255, 252, 245, 0.96);
+      }
+
+      .window-frame::before {
+        left: 50%;
+        top: 0;
+        width: 10px;
+        height: 100%;
+        transform: translateX(-50%);
+      }
+
+      .window-frame::after {
+        left: 0;
+        top: 48%;
+        width: 100%;
+        height: 10px;
+        transform: translateY(-50%);
+      }
+
+      .sunbeam {
+        position: absolute;
+        inset: -10% 0 auto auto;
+        width: 84%;
+        height: 120%;
+        background: linear-gradient(110deg, rgba(255, 255, 255, 0.5), rgba(255, 245, 205, 0));
+        transform: skewX(-16deg);
+        transform-origin: top right;
+        animation: beam 7s ease-in-out infinite;
+      }
+
+      .cloud {
+        position: absolute;
+        width: 132px;
+        height: 48px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.92);
+        filter: drop-shadow(0 12px 16px rgba(255, 255, 255, 0.38));
+      }
+
+      .cloud::before,
+      .cloud::after {
+        content: "";
+        position: absolute;
+        border-radius: 50%;
+        background: inherit;
+      }
+
+      .cloud::before {
+        width: 56px;
+        height: 56px;
+        left: 18px;
+        top: -24px;
+      }
+
+      .cloud::after {
+        width: 68px;
+        height: 68px;
+        right: 18px;
+        top: -28px;
+      }
+
+      .cloud.one {
+        top: 82px;
+        left: 72px;
+        animation: sway 9s ease-in-out infinite;
+      }
+
+      .cloud.two {
+        top: 144px;
+        right: 88px;
+        transform: scale(0.82);
+        animation: sway 12s ease-in-out infinite reverse;
+      }
+
+      .sill {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 150px;
+        background:
+          linear-gradient(180deg, #ffc894 0%, #f7b883 26%, #e6a16f 100%);
+        box-shadow: inset 0 12px 0 rgba(255, 255, 255, 0.18);
+      }
+
+      .sill::before {
+        content: "";
+        position: absolute;
+        inset: 22px auto auto 38px;
+        width: 150px;
+        height: 84px;
+        border-radius: 30px 30px 20px 20px;
+        background: linear-gradient(180deg, #dff1e4 0%, #b8dfc4 100%);
+        box-shadow: inset 0 -6px 0 rgba(85, 126, 93, 0.18);
+      }
+
+      .sill::after {
+        content: "";
+        position: absolute;
+        right: 44px;
+        top: 18px;
+        width: 96px;
+        height: 96px;
+        border-radius: 999px;
+        background:
+          radial-gradient(circle at 36% 30%, #fff8ee 0%, #fff8ee 20%, #f6d7ba 22%, #f6d7ba 44%, #e8b898 46%, #e8b898 58%, transparent 60%);
+        opacity: 0.92;
+      }
+
+      .cat {
+        position: absolute;
+        left: 50%;
+        bottom: 76px;
+        width: 280px;
+        height: 320px;
+        transform: translateX(-50%);
+        animation: nap 4.8s ease-in-out infinite;
+      }
+
+      .tail {
+        position: absolute;
+        right: 8px;
+        bottom: 72px;
+        width: 110px;
+        height: 136px;
+        border: 18px solid var(--caramel-deep);
+        border-color: var(--caramel-deep) var(--caramel-deep) transparent transparent;
+        border-radius: 90px 90px 0 0;
+        transform: rotate(26deg);
+      }
+
+      .body {
+        position: absolute;
+        inset: auto 0 0 0;
+        margin: auto;
+        width: 238px;
+        height: 192px;
+        background: linear-gradient(180deg, #d28a59 0%, #b96c42 100%);
+        border-radius: 48% 48% 34% 34%;
+        box-shadow: inset 0 -12px 0 rgba(124, 73, 43, 0.18);
+      }
+
+      .body::before {
+        content: "";
+        position: absolute;
+        inset: 42px 48px 24px;
+        background: linear-gradient(180deg, #fff4e1 0%, #ffe6c1 100%);
+        border-radius: 48%;
+      }
+
+      .head {
+        position: absolute;
+        left: 50%;
+        top: 28px;
+        width: 186px;
+        height: 150px;
+        transform: translateX(-50%) rotate(-2deg);
+        background: linear-gradient(180deg, #d89361 0%, #c27346 100%);
+        border-radius: 48% 48% 42% 42%;
+      }
+
+      .ear {
+        position: absolute;
+        top: -26px;
+        width: 64px;
+        height: 78px;
+        background: #cb7c4d;
+        clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+      }
+
+      .ear::after {
+        content: "";
+        position: absolute;
+        inset: 18px 14px 10px;
+        background: #f5a8b8;
+        clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+      }
+
+      .ear.left {
+        left: 18px;
+        transform: rotate(-10deg);
+      }
+
+      .ear.right {
+        right: 18px;
+        transform: rotate(12deg);
+      }
+
+      .eye {
+        position: absolute;
+        top: 70px;
+        width: 24px;
+        height: 6px;
+        border-radius: 999px;
+        background: #5b392c;
+      }
+
+      .eye.left { left: 48px; }
+      .eye.right { right: 48px; }
+
+      .nose {
+        position: absolute;
+        top: 88px;
+        left: 50%;
+        width: 16px;
+        height: 12px;
+        transform: translateX(-50%);
+        background: #f39ab0;
+        clip-path: polygon(50% 100%, 0 0, 100% 0);
+      }
+
+      .mouth {
+        position: absolute;
+        top: 100px;
+        left: 50%;
+        width: 40px;
+        height: 18px;
+        transform: translateX(-50%);
+      }
+
+      .mouth::before,
+      .mouth::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        width: 18px;
+        height: 12px;
+        border-bottom: 3px solid #6e4535;
+        border-radius: 0 0 18px 18px;
+      }
+
+      .mouth::before { left: 0; transform: rotate(10deg); }
+      .mouth::after { right: 0; transform: rotate(-10deg); }
+
+      .whiskers,
+      .whiskers::before,
+      .whiskers::after {
+        position: absolute;
+        width: 72px;
+        height: 2px;
+        background: rgba(87, 53, 40, 0.4);
+        content: "";
+      }
+
+      .whiskers.left { top: 94px; left: -10px; transform: rotate(8deg); }
+      .whiskers.left::before { top: -14px; left: 2px; transform: rotate(-10deg); }
+      .whiskers.left::after { top: 14px; left: 2px; transform: rotate(10deg); }
+      .whiskers.right { top: 94px; right: -10px; transform: rotate(-8deg); }
+      .whiskers.right::before { top: -14px; right: 2px; transform: rotate(10deg); }
+      .whiskers.right::after { top: 14px; right: 2px; transform: rotate(-10deg); }
+
+      .paw {
+        position: absolute;
+        bottom: 18px;
+        width: 72px;
+        height: 70px;
+        background: linear-gradient(180deg, #fff0db 0%, #ffe1bc 100%);
+        border-radius: 999px;
+      }
+
+      .paw.left { left: 52px; transform: rotate(-8deg); }
+      .paw.right { right: 52px; transform: rotate(8deg); }
+
+      .paw::after {
+        content: "";
+        position: absolute;
+        inset: auto 14px 12px;
+        height: 14px;
+        border-radius: 999px;
+        background: rgba(245, 168, 184, 0.82);
+      }
+
+      .copy-card {
+        position: relative;
+        padding: 22px 12px 22px 6px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 18px;
+      }
+
+      .eyebrow {
+        margin: 0;
+        font-size: 0.8rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.24em;
+        color: var(--soft-ink);
+      }
+
+      h1 {
+        margin: 0;
+        font-family: "Fraunces", serif;
+        font-size: clamp(3.2rem, 6.5vw, 5.8rem);
+        line-height: 0.92;
+        letter-spacing: -0.05em;
+      }
+
+      h1 span {
+        display: block;
+        color: var(--caramel-deep);
+        font-style: italic;
+      }
+
+      .lead {
+        margin: 0;
+        max-width: 17ch;
+        font-size: 1.1rem;
+        font-weight: 800;
+        color: #8c5f4a;
+      }
+
+      .letter {
+        position: relative;
+        margin: 4px 0;
+        padding: 26px 24px 24px;
+        border-radius: 28px;
+        background: rgba(255, 253, 248, 0.92);
+        border: 1px solid rgba(118, 78, 53, 0.1);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9);
+      }
+
+      .letter::before {
+        content: "miau";
+        position: absolute;
+        top: -16px;
+        right: 22px;
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: #fff0cb;
+        color: #9a694d;
+        font-size: 0.82rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.2em;
+      }
+
+      .letter p {
+        margin: 0;
+        font-size: clamp(1.12rem, 1.9vw, 1.28rem);
+        line-height: 1.8;
+      }
+
+      .letter strong {
+        color: var(--caramel-deep);
+      }
+
+      .chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+
+      .chip {
+        padding: 12px 16px;
+        border-radius: 999px;
+        border: 1px solid rgba(117, 78, 54, 0.1);
+        background: rgba(255, 249, 239, 0.88);
+        color: #7d5745;
+        font-size: 0.95rem;
+        font-weight: 800;
+      }
+
+      .footer {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: var(--soft-ink);
+        font-size: 0.98rem;
+      }
+
+      .paw-print {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        background:
+          radial-gradient(circle at 50% 70%, #f5a8b8 0 28%, transparent 30%),
+          radial-gradient(circle at 20% 26%, #f5a8b8 0 13%, transparent 14%),
+          radial-gradient(circle at 42% 10%, #f5a8b8 0 13%, transparent 14%),
+          radial-gradient(circle at 66% 10%, #f5a8b8 0 13%, transparent 14%),
+          radial-gradient(circle at 86% 26%, #f5a8b8 0 13%, transparent 14%);
+        opacity: 0.9;
+      }
+
+      @keyframes glow {
+        0%, 100% { transform: scale(1); opacity: 0.95; }
+        50% { transform: scale(1.06); opacity: 1; }
+      }
+
+      @keyframes drift {
+        0%, 100% { transform: translateY(0) scale(1); opacity: 0.7; }
+        50% { transform: translateY(-14px) scale(1.2); opacity: 1; }
+      }
+
+      @keyframes float {
+        0% { transform: translateY(0) scale(0.9); opacity: 0; }
+        10%, 70% { opacity: 0.75; }
+        100% { transform: translateY(-112vh) scale(1.15); opacity: 0; }
+      }
+
+      @keyframes sway {
+        0%, 100% { transform: translateX(0); }
+        50% { transform: translateX(16px); }
+      }
+
+      @keyframes beam {
+        0%, 100% { opacity: 0.54; transform: skewX(-16deg) translateX(0); }
+        50% { opacity: 0.72; transform: skewX(-16deg) translateX(-14px); }
+      }
+
+      @keyframes nap {
+        0%, 100% { transform: translateX(-50%) translateY(0); }
+        50% { transform: translateX(-50%) translateY(-8px); }
+      }
+
+      @media (max-width: 900px) {
+        body {
+          overflow: auto;
+        }
+
+        .sun-glow {
+          width: 150px;
+          height: 150px;
+          top: 26px;
+          right: 18px;
+        }
+
+        main {
+          padding: 18px;
+        }
+
+        .scene {
+          grid-template-columns: 1fr;
+          padding: 16px;
+          border-radius: 28px;
+        }
+
+        .window-card {
+          min-height: 440px;
+        }
+
+        .cat {
+          width: 220px;
+          bottom: 58px;
+        }
+
+        .copy-card {
+          padding: 4px 4px 8px;
+        }
+
+        h1 {
+          font-size: clamp(2.9rem, 12vw, 4.4rem);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="sun-glow" aria-hidden="true"></div>
+
+    <div class="sparkles" aria-hidden="true">
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+
+    <div class="hearts" aria-hidden="true">
+      <span>♥</span>
+      <span>♥</span>
+      <span>♥</span>
+      <span>♥</span>
+    </div>
+
+    <main>
+      <section class="scene">
+        <div class="window-card">
+          <div class="sunbeam"></div>
+          <div class="window-frame"></div>
+          <div class="cloud one"></div>
+          <div class="cloud two"></div>
+
+          <div class="cat" aria-hidden="true">
+            <div class="tail"></div>
+            <div class="head">
+              <div class="ear left"></div>
+              <div class="ear right"></div>
+              <div class="eye left"></div>
+              <div class="eye right"></div>
+              <div class="nose"></div>
+              <div class="mouth"></div>
+              <div class="whiskers left"></div>
+              <div class="whiskers right"></div>
+            </div>
+            <div class="body">
+              <div class="paw left"></div>
+              <div class="paw right"></div>
+            </div>
+          </div>
+
+          <div class="sill"></div>
+        </div>
+
+        <div class="copy-card">
+          <p class="eyebrow">Poranna wersja • 21 kwietnia 2026</p>
+          <h1>
+            Dzień dobry,
+            <span>najśliczniejsza kotko.</span>
+          </h1>
+          <p class="lead">Dzisiejszy plan: trochę słońca, trochę uśmiechu i dużo czułości dla Ciebie.</p>
+
+          <div class="letter">
+            <p>
+              Gdybym dziś był Twoim małym porannym kotem, to najpierw usiadłbym obok Ciebie na poduszce,
+              zamruczał cichutkie <strong>„hej, piękna”</strong>, a potem przypomniałbym Ci, że ten dzień już
+              zrobił się lepszy tylko dlatego, że Ty w nim jesteś. Życzę Ci poranka miękkiego jak koci brzuszek,
+              lekkiego jak przeciągnięcie po drzemce i słodkiego jak buziak ukradziony przed pierwszą kawą.
+            </p>
+          </div>
+
+          <div class="chips">
+            <div class="chip">status serduszka: mruczy</div>
+            <div class="chip">dzisiejszy buff: +100 do uroku</div>
+            <div class="chip">zalecenie: przyjąć dużo głasków</div>
+          </div>
+
+          <div class="footer">
+            <div class="paw-print" aria-hidden="true"></div>
+            <div>Nie spiesz się za bardzo. Nawet kotki wiedzą, że najładniejsze poranki smakują powoli.</div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
