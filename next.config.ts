@@ -3,7 +3,7 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   output: "standalone",
   outputFileTracingIncludes: {
-    "/*": ["./sites/**/*.html"],
+    "/*": ["./sites/**/*.html", "./mom/**/*.html"],
   },
   turbopack: {
     root: process.cwd(),

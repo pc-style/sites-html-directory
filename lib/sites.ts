@@ -2,6 +2,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 
 const SITES_DIR = path.join(process.cwd(), "sites");
+const MOM_DIR = path.join(process.cwd(), "mom");
 const SITE_FILE_PATTERN = /^(\d{4})-(\d{2})-(\d{2})_(\d{2})-(\d{2})\.html$/;
 
 export type SiteFile = {
@@ -32,11 +33,17 @@ function parseSiteFilename(name: string) {
   };
 }
 
-export async function getSiteFiles() {
+function getDirForSource(source: "sites" | "mom") {
+  return source === "mom" ? MOM_DIR : SITES_DIR;
+}
+
+export async function getSiteFiles(source: "sites" | "mom" = "sites") {
+  const dir = getDirForSource(source);
+  const basePath = source === "mom" ? "/mom" : "/";
   let entries: string[] = [];
 
   try {
-    entries = await fs.readdir(SITES_DIR);
+    entries = await fs.readdir(dir);
   } catch {
     return [];
   }
@@ -45,24 +52,24 @@ export async function getSiteFiles() {
     .filter((name) => name.endsWith(".html"))
     .map((name) => {
       const parsed = parseSiteFilename(name);
-      return parsed ? { name, href: `/?file=${encodeURIComponent(name)}`, ...parsed } : null;
+      return parsed ? { name, href: `${basePath}?file=${encodeURIComponent(name)}`, ...parsed } : null;
     })
     .filter((file): file is SiteFile => file !== null)
     .sort((a, b) => b.timestamp - a.timestamp || a.name.localeCompare(b.name));
 }
 
-export async function getLatestSiteFile() {
-  const files = await getSiteFiles();
+export async function getLatestSiteFile(source: "sites" | "mom" = "sites") {
+  const files = await getSiteFiles(source);
   return files[0] ?? null;
 }
 
-export async function getSiteHtml(name: string) {
+export async function getSiteHtml(name: string, source: "sites" | "mom" = "sites") {
   const parsed = parseSiteFilename(name);
   if (!parsed) {
     return null;
   }
 
-  const filePath = path.join(SITES_DIR, name);
+  const filePath = path.join(getDirForSource(source), name);
   try {
     const raw = await fs.readFile(filePath, "utf8");
     const scrollFix = `<style>html,body{overflow:auto!important;height:auto!important;min-height:100%!important}</style>`;
