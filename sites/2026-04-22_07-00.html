@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Todo Orbit</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@500;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #f3efe6;
+      --surface: #fff9ee;
+      --ink: #17120f;
+      --muted: #6c645a;
+      --accent: #e05b2f;
+      --accent-soft: #ffd8c8;
+      --line: #d8d0c3;
+      --done: #9a9489;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "IBM Plex Mono", monospace;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 10% 10%, #fff5d9 0, transparent 42%),
+        radial-gradient(circle at 90% 30%, #ffe0b8 0, transparent 38%),
+        var(--bg);
+      display: grid;
+      place-items: center;
+      padding: 24px;
+    }
+
+    .app {
+      width: min(720px, 100%);
+      background: var(--surface);
+      border: 2px solid var(--line);
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 26px 55px rgba(23, 18, 15, 0.16);
+      transform: translateY(16px);
+      opacity: 0;
+      animation: rise 560ms ease forwards;
+    }
+
+    .hero {
+      padding: 28px;
+      border-bottom: 2px solid var(--line);
+      background: linear-gradient(135deg, #fff6d8 0%, #fff1de 50%, #ffe6dc 100%);
+    }
+
+    .brand {
+      margin: 0;
+      font-family: "Syne", sans-serif;
+      font-size: clamp(2rem, 5vw, 3rem);
+      line-height: 1;
+      letter-spacing: -0.03em;
+    }
+
+    .sub {
+      margin: 10px 0 0;
+      color: var(--muted);
+      max-width: 45ch;
+      font-size: 0.92rem;
+    }
+
+    .tools {
+      padding: 20px 28px 0;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+    }
+
+    .task-input {
+      font: inherit;
+      border: 2px solid var(--line);
+      background: #fff;
+      color: var(--ink);
+      border-radius: 12px;
+      padding: 12px 14px;
+      min-width: 0;
+      outline: none;
+      transition: border-color .18s ease, transform .18s ease;
+    }
+
+    .task-input:focus {
+      border-color: var(--accent);
+      transform: translateY(-1px);
+    }
+
+    .add-btn {
+      font: inherit;
+      font-weight: 500;
+      border: 2px solid var(--accent);
+      color: #fff;
+      background: var(--accent);
+      border-radius: 12px;
+      padding: 12px 16px;
+      cursor: pointer;
+      transition: transform .18s ease, filter .18s ease;
+    }
+
+    .add-btn:hover { transform: translateY(-1px); filter: brightness(1.05); }
+    .add-btn:active { transform: translateY(0); }
+
+    .meta {
+      padding: 12px 28px 0;
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    .list {
+      list-style: none;
+      margin: 12px 0 0;
+      padding: 0 16px 22px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .item {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border: 2px solid var(--line);
+      border-radius: 12px;
+      background: #fff;
+      animation: fadeIn 260ms ease;
+    }
+
+    .check {
+      width: 20px;
+      height: 20px;
+      margin: 0;
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+
+    .task {
+      margin: 0;
+      font-size: 0.92rem;
+      word-break: break-word;
+      transition: color .2s ease, text-decoration-color .2s ease;
+    }
+
+    .item.done .task {
+      color: var(--done);
+      text-decoration: line-through;
+      text-decoration-thickness: 2px;
+    }
+
+    .delete-btn {
+      border: 0;
+      background: var(--accent-soft);
+      color: #7d2a10;
+      border-radius: 10px;
+      padding: 7px 10px;
+      font: inherit;
+      cursor: pointer;
+      transition: transform .18s ease;
+    }
+
+    .delete-btn:hover { transform: translateY(-1px); }
+
+    .empty {
+      text-align: center;
+      color: var(--muted);
+      padding: 26px 10px 10px;
+      font-size: 0.88rem;
+    }
+
+    @media (max-width: 560px) {
+      .hero { padding: 22px; }
+      .tools { padding: 16px 22px 0; grid-template-columns: 1fr; }
+      .meta { padding: 10px 22px 0; }
+    }
+
+    @keyframes rise {
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <main class="app" aria-label="Todo app">
+    <header class="hero">
+      <h1 class="brand">TODO ORBIT</h1>
+      <p class="sub">Single-file task list. Fast input, one-tap complete, and automatic local save.</p>
+    </header>
+
+    <form class="tools" id="todo-form">
+      <input id="todo-input" class="task-input" type="text" placeholder="Write a task and hit Add" autocomplete="off" aria-label="New task" />
+      <button class="add-btn" type="submit">Add Task</button>
+    </form>
+
+    <p class="meta"><span id="count">0</span> pending</p>
+    <ul class="list" id="todo-list"></ul>
+    <p class="empty" id="empty-state">No tasks yet. Add your first one.</p>
+  </main>
+
+  <script>
+    const STORAGE_KEY = "todo-orbit-v1";
+    const form = document.getElementById("todo-form");
+    const input = document.getElementById("todo-input");
+    const list = document.getElementById("todo-list");
+    const empty = document.getElementById("empty-state");
+    const count = document.getElementById("count");
+
+    let todos = load();
+
+    function load() {
+      try {
+        return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+      } catch {
+        return [];
+      }
+    }
+
+    function save() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(todos));
+    }
+
+    function updateMeta() {
+      const pending = todos.filter((todo) => !todo.done).length;
+      count.textContent = String(pending);
+      empty.style.display = todos.length ? "none" : "block";
+    }
+
+    function render() {
+      list.innerHTML = "";
+      todos.forEach((todo) => {
+        const li = document.createElement("li");
+        li.className = `item${todo.done ? " done" : ""}`;
+
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.className = "check";
+        checkbox.checked = todo.done;
+        checkbox.addEventListener("change", () => {
+          todo.done = checkbox.checked;
+          save();
+          render();
+        });
+
+        const text = document.createElement("p");
+        text.className = "task";
+        text.textContent = todo.text;
+
+        const del = document.createElement("button");
+        del.type = "button";
+        del.className = "delete-btn";
+        del.textContent = "Delete";
+        del.addEventListener("click", () => {
+          todos = todos.filter((t) => t.id !== todo.id);
+          save();
+          render();
+        });
+
+        li.append(checkbox, text, del);
+        list.append(li);
+      });
+      updateMeta();
+    }
+
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const text = input.value.trim();
+      if (!text) return;
+
+      todos.unshift({
+        id: Date.now() + Math.random().toString(16).slice(2),
+        text,
+        done: false
+      });
+
+      input.value = "";
+      save();
+      render();
+      input.focus();
+    });
+
+    render();
+  </script>
+</body>
+</html>
