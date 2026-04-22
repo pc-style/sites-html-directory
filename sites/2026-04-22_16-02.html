@@ -1,0 +1,696 @@
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Popołudniowe Mruczenie</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,700;1,500;1,700&family=Space+Mono:wght@400;700&display=swap");
+
+      :root {
+        --amber: #e8a44a;
+        --amber-deep: #c07a28;
+        --amber-glow: #f5d590;
+        --terracotta: #c4644a;
+        --terracotta-soft: #e09880;
+        --warm-bg: #fdf3e4;
+        --paper: #faf0de;
+        --paper-dark: #f0e0c4;
+        --ink: #3d2b1f;
+        --ink-soft: #7a6050;
+        --book-1: #8b5e3c;
+        --book-2: #b0453a;
+        --book-3: #3c6e71;
+        --book-4: #d4a24e;
+        --book-5: #6a4c93;
+        --shadow: 0 32px 80px rgba(60, 35, 18, 0.22);
+      }
+
+      * { box-sizing: border-box; margin: 0; }
+      html, body { min-height: 100%; }
+
+      body {
+        font-family: "Lora", serif;
+        color: var(--ink);
+        background:
+          radial-gradient(ellipse at 30% 20%, rgba(245, 213, 144, 0.5), transparent 40%),
+          radial-gradient(ellipse at 75% 80%, rgba(196, 100, 74, 0.15), transparent 35%),
+          linear-gradient(180deg, #fdf3e4 0%, #f5e6cc 50%, #eedcba 100%);
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 28px;
+        overflow-x: hidden;
+      }
+
+      /* Dust particles */
+      .dust {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        overflow: hidden;
+      }
+
+      .dust span {
+        position: absolute;
+        width: 4px;
+        height: 4px;
+        border-radius: 50%;
+        background: rgba(232, 164, 74, 0.5);
+        animation: dust-float 12s linear infinite;
+      }
+
+      .dust span:nth-child(1) { left: 12%; top: -5%; animation-delay: 0s; width: 3px; height: 3px; }
+      .dust span:nth-child(2) { left: 28%; top: -8%; animation-delay: -3s; width: 5px; height: 5px; opacity: 0.3; }
+      .dust span:nth-child(3) { left: 48%; top: -4%; animation-delay: -6s; }
+      .dust span:nth-child(4) { left: 65%; top: -9%; animation-delay: -2s; width: 3px; height: 3px; }
+      .dust span:nth-child(5) { left: 82%; top: -6%; animation-delay: -8s; width: 6px; height: 6px; opacity: 0.25; }
+      .dust span:nth-child(6) { left: 38%; top: -3%; animation-delay: -10s; }
+      .dust span:nth-child(7) { left: 72%; top: -7%; animation-delay: -4s; width: 3px; height: 3px; }
+      .dust span:nth-child(8) { left: 55%; top: -2%; animation-delay: -7s; opacity: 0.4; }
+
+      .scene {
+        width: min(960px, 100%);
+        display: grid;
+        grid-template-rows: auto auto;
+        gap: 0;
+        position: relative;
+      }
+
+      /* Top: illustration panel */
+      .illustration {
+        position: relative;
+        height: 480px;
+        background:
+          linear-gradient(180deg, #fce8c0 0%, #f5d898 30%, #e8c878 100%);
+        border-radius: 28px 28px 0 0;
+        overflow: hidden;
+        border: 1px solid rgba(192, 122, 40, 0.15);
+        border-bottom: none;
+      }
+
+      /* Golden hour sunbeam */
+      .sunbeam {
+        position: absolute;
+        top: -20%;
+        right: -10%;
+        width: 70%;
+        height: 140%;
+        background: linear-gradient(
+          155deg,
+          rgba(255, 235, 180, 0.7) 0%,
+          rgba(245, 213, 144, 0.3) 40%,
+          transparent 70%
+        );
+        transform: skewX(-12deg);
+        animation: beam-sway 8s ease-in-out infinite;
+      }
+
+      .sunbeam::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          155deg,
+          rgba(255, 255, 255, 0.3) 0%,
+          transparent 50%
+        );
+        transform: translateX(30%);
+      }
+
+      /* Bookshelf */
+      .shelf {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 200px;
+      }
+
+      .shelf-plank {
+        position: absolute;
+        bottom: 0;
+        left: 5%;
+        right: 5%;
+        height: 18px;
+        background: linear-gradient(180deg, #9e7044 0%, #7a5430 100%);
+        border-radius: 3px;
+        box-shadow:
+          0 4px 12px rgba(60, 30, 10, 0.3),
+          inset 0 1px 0 rgba(255, 255, 255, 0.15);
+      }
+
+      .shelf-plank::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: -8px;
+        height: 8px;
+        background: linear-gradient(180deg, rgba(60, 30, 10, 0.2), transparent);
+      }
+
+      /* Books on the shelf */
+      .book {
+        position: absolute;
+        bottom: 18px;
+        border-radius: 3px 3px 0 0;
+        box-shadow: inset -3px 0 0 rgba(0,0,0,0.12), inset 2px 0 0 rgba(255,255,255,0.08);
+      }
+
+      .book::after {
+        content: "";
+        position: absolute;
+        top: 12px;
+        left: 4px;
+        right: 4px;
+        height: 2px;
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 1px;
+        box-shadow: 0 8px 0 rgba(255, 255, 255, 0.1), 0 16px 0 rgba(255, 255, 255, 0.08);
+      }
+
+      .book.b1 { left: 10%; width: 34px; height: 130px; background: linear-gradient(90deg, #9e5e3c, var(--book-1)); }
+      .book.b2 { left: 16%; width: 28px; height: 118px; background: linear-gradient(90deg, #9e3a30, var(--book-2)); }
+      .book.b3 { left: 21%; width: 38px; height: 142px; background: linear-gradient(90deg, #2e5c5f, var(--book-3)); }
+      .book.b4 { left: 28%; width: 30px; height: 124px; background: linear-gradient(90deg, #bc9040, var(--book-4)); }
+      .book.b5 { left: 34%; width: 32px; height: 136px; background: linear-gradient(90deg, #5a3e80, var(--book-5)); transform: rotate(2deg); }
+
+      .book.b6 { right: 14%; width: 34px; height: 128px; background: linear-gradient(90deg, #8a7050, #a5845e); }
+      .book.b7 { right: 20%; width: 26px; height: 110px; background: linear-gradient(90deg, #c07858, #d49070); }
+      .book.b8 { right: 25%; width: 36px; height: 138px; background: linear-gradient(90deg, #4a6a50, #5c8262); }
+
+      /* Leaning book */
+      .book.lean {
+        left: 40%;
+        width: 30px;
+        height: 132px;
+        background: linear-gradient(90deg, #b8704a, #d08a5e);
+        transform: rotate(22deg);
+        transform-origin: bottom left;
+        bottom: 16px;
+      }
+
+      /* Book stack for the cat to sleep on */
+      .book-stack {
+        position: absolute;
+        bottom: 18px;
+        left: 50%;
+        transform: translateX(-40%);
+      }
+
+      .stack-book {
+        position: relative;
+        border-radius: 4px;
+        box-shadow: 0 2px 6px rgba(30, 15, 5, 0.2);
+      }
+
+      .stack-book.s1 {
+        width: 140px;
+        height: 22px;
+        background: linear-gradient(180deg, #c06848, #a85838);
+        margin-bottom: -1px;
+      }
+
+      .stack-book.s2 {
+        width: 152px;
+        height: 20px;
+        background: linear-gradient(180deg, #4a7a6e, #3a6458);
+        margin-left: -6px;
+        margin-bottom: -1px;
+      }
+
+      .stack-book.s3 {
+        width: 136px;
+        height: 24px;
+        background: linear-gradient(180deg, #c4944a, #a87c38);
+        margin-left: 4px;
+      }
+
+      /* Sleeping cat on book stack */
+      .sleeping-cat {
+        position: absolute;
+        bottom: 78px;
+        left: 50%;
+        transform: translateX(-44%);
+        width: 180px;
+        height: 100px;
+        animation: cat-breathe 4s ease-in-out infinite;
+      }
+
+      .cat-body-curl {
+        position: absolute;
+        bottom: 0;
+        left: 20px;
+        width: 140px;
+        height: 68px;
+        background: linear-gradient(180deg, #f5a050 0%, #e08838 100%);
+        border-radius: 60px 70px 30px 30px;
+        box-shadow: inset 0 -8px 0 rgba(180, 100, 30, 0.15);
+      }
+
+      /* Stripes on cat */
+      .cat-body-curl::before {
+        content: "";
+        position: absolute;
+        top: 8px;
+        left: 20px;
+        right: 20px;
+        height: 100%;
+        background: repeating-linear-gradient(
+          90deg,
+          transparent 0 14px,
+          rgba(200, 110, 30, 0.3) 14px 18px
+        );
+        border-radius: inherit;
+        mask-image: linear-gradient(180deg, black 0%, transparent 70%);
+      }
+
+      .cat-head-nap {
+        position: absolute;
+        bottom: 26px;
+        left: 0;
+        width: 62px;
+        height: 56px;
+        background: linear-gradient(180deg, #f0983e, #d87c28);
+        border-radius: 50% 50% 44% 44%;
+      }
+
+      .nap-ear {
+        position: absolute;
+        width: 20px;
+        height: 26px;
+        background: #e89038;
+        clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+      }
+
+      .nap-ear::after {
+        content: "";
+        position: absolute;
+        inset: 8px 5px 4px;
+        background: #f5b8a0;
+        clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+      }
+
+      .nap-ear.le { top: -14px; left: 4px; transform: rotate(-6deg); }
+      .nap-ear.re { top: -14px; right: 4px; transform: rotate(6deg); }
+
+      /* Closed sleepy eyes */
+      .nap-eye {
+        position: absolute;
+        top: 24px;
+        width: 12px;
+        height: 2px;
+        background: #5a3820;
+        border-radius: 2px;
+      }
+
+      .nap-eye.le { left: 12px; transform: rotate(-4deg); }
+      .nap-eye.re { right: 12px; transform: rotate(4deg); }
+
+      .nap-nose {
+        position: absolute;
+        top: 30px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 8px;
+        height: 6px;
+        background: #d48070;
+        clip-path: polygon(50% 100%, 0 0, 100% 0);
+      }
+
+      .nap-mouth {
+        position: absolute;
+        top: 36px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 16px;
+        height: 6px;
+      }
+
+      .nap-mouth::before,
+      .nap-mouth::after {
+        content: "";
+        position: absolute;
+        width: 8px;
+        height: 5px;
+        border-bottom: 1.5px solid #7a4828;
+        border-radius: 0 0 8px 8px;
+      }
+
+      .nap-mouth::before { left: 0; }
+      .nap-mouth::after { right: 0; }
+
+      .cat-tail-curl {
+        position: absolute;
+        bottom: 8px;
+        right: -8px;
+        width: 70px;
+        height: 50px;
+        border: 12px solid #e08838;
+        border-color: #e08838 #e08838 transparent transparent;
+        border-radius: 0 50px 0 0;
+        animation: tail-lazy 5s ease-in-out infinite;
+      }
+
+      .cat-paw-tuck {
+        position: absolute;
+        bottom: -2px;
+        left: 34px;
+        width: 30px;
+        height: 18px;
+        background: #f5c090;
+        border-radius: 50%;
+      }
+
+      /* zzz bubbles */
+      .snore {
+        position: absolute;
+        bottom: 76px;
+        left: -14px;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .snore-bubble {
+        width: fit-content;
+        padding: 4px 10px;
+        background: rgba(255, 255, 255, 0.7);
+        border-radius: 999px;
+        font-family: "Space Mono", monospace;
+        font-size: 0.7rem;
+        color: var(--ink-soft);
+        border: 1px solid rgba(192, 122, 40, 0.15);
+        animation: snore-pop 3s ease-in-out infinite;
+      }
+
+      .snore-bubble:nth-child(1) { animation-delay: 0s; }
+      .snore-bubble:nth-child(2) { animation-delay: 0.8s; margin-left: -8px; }
+      .snore-bubble:nth-child(3) { animation-delay: 1.6s; margin-left: -16px; }
+
+      /* Bottom: text panel */
+      .text-panel {
+        background: var(--paper);
+        border-radius: 0 0 28px 28px;
+        border: 1px solid rgba(192, 122, 40, 0.15);
+        border-top: 2px solid var(--amber);
+        padding: 38px 42px 36px;
+        position: relative;
+      }
+
+      .text-panel::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 40px;
+        right: 40px;
+        height: 1px;
+        background: repeating-linear-gradient(
+          90deg,
+          var(--amber) 0 4px,
+          transparent 4px 10px
+        );
+      }
+
+      .text-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 32px;
+        align-items: start;
+      }
+
+      .header-col {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+
+      .time-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 14px;
+        background: var(--amber);
+        color: white;
+        font-family: "Space Mono", monospace;
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        border-radius: 4px;
+        width: fit-content;
+      }
+
+      .time-badge::before {
+        content: "";
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.5);
+        animation: blink-dot 2s infinite;
+      }
+
+      h1 {
+        font-family: "Lora", serif;
+        font-size: clamp(2.4rem, 5vw, 3.6rem);
+        line-height: 1.05;
+        letter-spacing: -0.02em;
+        color: var(--ink);
+      }
+
+      h1 em {
+        display: block;
+        color: var(--terracotta);
+        font-weight: 500;
+      }
+
+      .subtitle {
+        font-family: "Space Mono", monospace;
+        font-size: 0.82rem;
+        color: var(--ink-soft);
+        line-height: 1.6;
+        max-width: 30ch;
+      }
+
+      .message-col {
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+      }
+
+      .message-box {
+        padding: 24px;
+        background:
+          linear-gradient(135deg, rgba(232, 164, 74, 0.06), rgba(196, 100, 74, 0.04));
+        border-radius: 16px;
+        border-left: 4px solid var(--amber);
+      }
+
+      .message-box p {
+        font-size: clamp(1rem, 1.5vw, 1.12rem);
+        line-height: 1.85;
+        color: #4a3828;
+      }
+
+      .message-box p + p {
+        margin-top: 14px;
+      }
+
+      .message-box strong {
+        color: var(--terracotta);
+      }
+
+      .tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .tag {
+        padding: 8px 14px;
+        border-radius: 4px;
+        font-family: "Space Mono", monospace;
+        font-size: 0.78rem;
+        font-weight: 700;
+        border: 1.5px solid;
+      }
+
+      .tag.t1 { color: var(--book-3); border-color: var(--book-3); background: rgba(60, 110, 113, 0.06); }
+      .tag.t2 { color: var(--terracotta); border-color: var(--terracotta-soft); background: rgba(196, 100, 74, 0.06); }
+      .tag.t3 { color: var(--book-5); border-color: #8a70b0; background: rgba(106, 76, 147, 0.06); }
+
+      .footer-note {
+        grid-column: 1 / -1;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding-top: 20px;
+        border-top: 1px solid rgba(192, 122, 40, 0.15);
+        color: var(--ink-soft);
+        font-size: 0.92rem;
+        font-style: italic;
+      }
+
+      .footer-note .paw {
+        font-size: 1.4rem;
+        opacity: 0.5;
+      }
+
+      .footer-note span em {
+        font-family: "Lora", serif;
+        font-size: 1.15rem;
+        color: var(--amber-deep);
+        font-weight: 700;
+      }
+
+      @keyframes dust-float {
+        0% { transform: translateY(0) translateX(0); opacity: 0; }
+        10% { opacity: 0.6; }
+        90% { opacity: 0.3; }
+        100% { transform: translateY(110vh) translateX(40px); opacity: 0; }
+      }
+
+      @keyframes beam-sway {
+        0%, 100% { opacity: 0.7; transform: skewX(-12deg) translateX(0); }
+        50% { opacity: 0.9; transform: skewX(-12deg) translateX(-20px); }
+      }
+
+      @keyframes cat-breathe {
+        0%, 100% { transform: translateX(-44%) scaleY(1); }
+        50% { transform: translateX(-44%) scaleY(1.03); }
+      }
+
+      @keyframes tail-lazy {
+        0%, 100% { transform: rotate(0deg); }
+        50% { transform: rotate(8deg); }
+      }
+
+      @keyframes snore-pop {
+        0%, 100% { transform: translateY(0) scale(1); opacity: 0.6; }
+        50% { transform: translateY(-6px) scale(1.08); opacity: 1; }
+      }
+
+      @keyframes blink-dot {
+        0%, 100% { opacity: 0.5; }
+        50% { opacity: 1; }
+      }
+
+      @media (max-width: 820px) {
+        body { padding: 14px; }
+
+        .illustration { height: 360px; }
+
+        .text-grid {
+          grid-template-columns: 1fr;
+          gap: 22px;
+        }
+
+        .text-panel { padding: 28px 22px; }
+
+        h1 { font-size: clamp(2rem, 9vw, 3rem); }
+
+        .footer-note { grid-column: 1; }
+
+        .book.b6, .book.b7, .book.b8, .book.lean { display: none; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="dust" aria-hidden="true">
+      <span></span><span></span><span></span><span></span>
+      <span></span><span></span><span></span><span></span>
+    </div>
+
+    <div class="scene">
+      <div class="illustration">
+        <div class="sunbeam"></div>
+
+        <div class="shelf">
+          <div class="book b1"></div>
+          <div class="book b2"></div>
+          <div class="book b3"></div>
+          <div class="book b4"></div>
+          <div class="book b5"></div>
+          <div class="book lean"></div>
+          <div class="book b6"></div>
+          <div class="book b7"></div>
+          <div class="book b8"></div>
+
+          <div class="book-stack">
+            <div class="stack-book s1"></div>
+            <div class="stack-book s2"></div>
+            <div class="stack-book s3"></div>
+          </div>
+
+          <div class="sleeping-cat" aria-hidden="true">
+            <div class="cat-tail-curl"></div>
+            <div class="cat-body-curl"></div>
+            <div class="cat-paw-tuck"></div>
+            <div class="cat-head-nap">
+              <div class="nap-ear le"></div>
+              <div class="nap-ear re"></div>
+              <div class="nap-eye le"></div>
+              <div class="nap-eye re"></div>
+              <div class="nap-nose"></div>
+              <div class="nap-mouth"></div>
+            </div>
+            <div class="snore">
+              <div class="snore-bubble">mrrr</div>
+              <div class="snore-bubble">purr</div>
+              <div class="snore-bubble">zzz</div>
+            </div>
+          </div>
+
+          <div class="shelf-plank"></div>
+        </div>
+      </div>
+
+      <div class="text-panel">
+        <div class="text-grid">
+          <div class="header-col">
+            <div class="time-badge">Popołudnie &bull; 22 kwi 2026</div>
+            <h1>
+              Hej, piękna,
+              <em>jak Ci mija dzień?</em>
+            </h1>
+            <p class="subtitle">Taka mała popołudniowa karteczka, bo zasługujesz na uśmiech w środku dnia.</p>
+          </div>
+
+          <div class="message-col">
+            <div class="message-box">
+              <p>
+                Wiesz, co robią koty o tej porze? Dokładnie to, co powinnaś: znajdują
+                najcieplejsze miejsce, kładą się wygodnie i przypominają sobie,
+                że <strong>świat może chwilę poczekać</strong>.
+              </p>
+              <p>
+                Jesteś dzisiaj jak popołudniowe słońce wpadające przez okno: ciepłe,
+                złote i sprawiające, że wszystko wokół wygląda ładniej.
+                Nawet jeśli dzień jest trochę chaotyczny, Ty dalej masz w sobie
+                tę kocią grację, przez którą chce się <strong>zostać bliżej na dłużej</strong>.
+              </p>
+              <p>
+                Życzę Ci reszty dnia lekkiego jak koci skok na parapet
+                i ciepłego jak mruczenie przy uchu.
+              </p>
+            </div>
+
+            <div class="tags">
+              <span class="tag t1">tryb: golden hour</span>
+              <span class="tag t2">energia: leniwe mruczenie</span>
+              <span class="tag t3">buff: +300 do piękności</span>
+            </div>
+          </div>
+
+          <div class="footer-note">
+            <span class="paw">&#x1F43E;</span>
+            <span>Jeszcze trochę dnia przed Tobą, ale pamiętaj: koty wiedzą, że popołudnia są po to, żeby się nimi delektować.
+            <br /><em>Mruczę do Ciebie.</em></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
