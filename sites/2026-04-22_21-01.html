@@ -1,0 +1,607 @@
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Wieczorne Mruczenie</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;700&display=swap");
+
+      :root {
+        --night: #10203d;
+        --night-deep: #091126;
+        --moon: #f4e7bf;
+        --moon-glow: rgba(244, 231, 191, 0.34);
+        --cloud: rgba(214, 224, 255, 0.1);
+        --card: rgba(11, 18, 35, 0.72);
+        --card-border: rgba(255, 255, 255, 0.12);
+        --ink: #f8f4ec;
+        --ink-soft: #c9d2e7;
+        --pink: #f4b7c8;
+        --pink-deep: #db8da5;
+        --cat: #2e354b;
+        --cat-soft: #475271;
+        --star: #fff7d6;
+        --shadow: 0 32px 90px rgba(0, 0, 0, 0.35);
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+      }
+
+      html,
+      body {
+        min-height: 100%;
+      }
+
+      body {
+        font-family: "Manrope", sans-serif;
+        color: var(--ink);
+        background:
+          radial-gradient(circle at 20% 20%, rgba(73, 99, 157, 0.45), transparent 28%),
+          radial-gradient(circle at 80% 15%, rgba(244, 183, 200, 0.12), transparent 24%),
+          radial-gradient(circle at 50% 120%, rgba(89, 103, 164, 0.35), transparent 34%),
+          linear-gradient(180deg, #17345f 0%, #10203d 42%, #091126 100%);
+        display: grid;
+        place-items: center;
+        padding: 24px;
+        overflow-x: hidden;
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background-image:
+          radial-gradient(circle at 14% 18%, rgba(255, 247, 214, 0.9) 0 1px, transparent 1.5px),
+          radial-gradient(circle at 72% 12%, rgba(255, 247, 214, 0.85) 0 1px, transparent 1.5px),
+          radial-gradient(circle at 85% 28%, rgba(255, 247, 214, 0.7) 0 1px, transparent 1.5px),
+          radial-gradient(circle at 31% 35%, rgba(255, 247, 214, 0.75) 0 1px, transparent 1.5px),
+          radial-gradient(circle at 60% 42%, rgba(255, 247, 214, 0.78) 0 1px, transparent 1.5px),
+          radial-gradient(circle at 12% 62%, rgba(255, 247, 214, 0.7) 0 1px, transparent 1.5px),
+          radial-gradient(circle at 77% 70%, rgba(255, 247, 214, 0.9) 0 1px, transparent 1.5px),
+          radial-gradient(circle at 48% 82%, rgba(255, 247, 214, 0.76) 0 1px, transparent 1.5px);
+        opacity: 0.85;
+        pointer-events: none;
+      }
+
+      .aurora {
+        position: fixed;
+        inset: auto auto -10% -10%;
+        width: 55vw;
+        height: 55vw;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(244, 183, 200, 0.16), transparent 62%);
+        filter: blur(22px);
+        animation: drift 13s ease-in-out infinite;
+        pointer-events: none;
+      }
+
+      .shell {
+        position: relative;
+        width: min(980px, 100%);
+        min-height: min(740px, calc(100vh - 48px));
+        display: grid;
+        grid-template-columns: 1.04fr 0.96fr;
+        border-radius: 30px;
+        overflow: hidden;
+        border: 1px solid var(--card-border);
+        box-shadow: var(--shadow);
+        background:
+          linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0)),
+          rgba(8, 15, 28, 0.5);
+        backdrop-filter: blur(12px);
+      }
+
+      .scene {
+        position: relative;
+        min-height: 420px;
+        background:
+          radial-gradient(circle at 64% 18%, var(--moon-glow), transparent 18%),
+          linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent 24%),
+          linear-gradient(180deg, #183560 0%, #10203d 55%, #0a1327 100%);
+      }
+
+      .scene::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+          linear-gradient(90deg, rgba(255, 255, 255, 0.06) 0 2px, transparent 2px 33.3%),
+          linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0 2px, transparent 2px 50%);
+        opacity: 0.18;
+        pointer-events: none;
+      }
+
+      .moon {
+        position: absolute;
+        top: 70px;
+        right: 92px;
+        width: 112px;
+        height: 112px;
+        border-radius: 50%;
+        background: radial-gradient(circle at 35% 35%, #fff9eb 0%, var(--moon) 55%, #c9b88c 100%);
+        box-shadow:
+          0 0 42px rgba(244, 231, 191, 0.45),
+          0 0 96px rgba(244, 231, 191, 0.18);
+      }
+
+      .moon::before,
+      .moon::after {
+        content: "";
+        position: absolute;
+        border-radius: 50%;
+        background: rgba(189, 168, 120, 0.18);
+      }
+
+      .moon::before {
+        width: 18px;
+        height: 18px;
+        top: 24px;
+        left: 32px;
+      }
+
+      .moon::after {
+        width: 11px;
+        height: 11px;
+        top: 56px;
+        right: 26px;
+      }
+
+      .cloud {
+        position: absolute;
+        border-radius: 999px;
+        background: var(--cloud);
+        filter: blur(2px);
+      }
+
+      .cloud.c1 {
+        width: 180px;
+        height: 46px;
+        top: 112px;
+        left: 44px;
+        animation: cloud 16s ease-in-out infinite;
+      }
+
+      .cloud.c2 {
+        width: 130px;
+        height: 36px;
+        top: 208px;
+        right: 56px;
+        animation: cloud 19s ease-in-out infinite reverse;
+      }
+
+      .window-sill {
+        position: absolute;
+        left: 32px;
+        right: 32px;
+        bottom: 118px;
+        height: 24px;
+        background: linear-gradient(180deg, #e2c7ab 0%, #c79f79 100%);
+        border-radius: 8px;
+        box-shadow:
+          0 8px 20px rgba(0, 0, 0, 0.22),
+          inset 0 1px 0 rgba(255, 255, 255, 0.32);
+      }
+
+      .blanket {
+        position: absolute;
+        left: 20px;
+        right: 92px;
+        bottom: 0;
+        height: 180px;
+        background:
+          linear-gradient(180deg, rgba(255, 255, 255, 0.16), transparent 18%),
+          linear-gradient(120deg, #f0a5bb 0%, #db8da5 44%, #9d5a7d 100%);
+        border-radius: 34px 34px 0 0;
+        overflow: hidden;
+      }
+
+      .blanket::before {
+        content: "";
+        position: absolute;
+        inset: 18px 22px auto 22px;
+        height: 36px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.12);
+      }
+
+      .blanket::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+          repeating-linear-gradient(
+            110deg,
+            rgba(255, 255, 255, 0.09) 0 20px,
+            transparent 20px 44px
+          );
+        opacity: 0.45;
+      }
+
+      .cat-wrap {
+        position: absolute;
+        left: 58px;
+        bottom: 74px;
+        width: 280px;
+        height: 220px;
+        animation: breathe 5.5s ease-in-out infinite;
+      }
+
+      .cat-body {
+        position: absolute;
+        left: 18px;
+        bottom: 8px;
+        width: 214px;
+        height: 128px;
+        background: linear-gradient(180deg, var(--cat-soft) 0%, var(--cat) 100%);
+        border-radius: 120px 120px 86px 86px;
+      }
+
+      .cat-body::before {
+        content: "";
+        position: absolute;
+        inset: 12px 24px auto 24px;
+        height: 28px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.08);
+      }
+
+      .cat-head {
+        position: absolute;
+        right: 22px;
+        bottom: 78px;
+        width: 96px;
+        height: 84px;
+        background: linear-gradient(180deg, #56627f 0%, #313a51 100%);
+        border-radius: 46px;
+      }
+
+      .ear {
+        position: absolute;
+        top: -24px;
+        width: 28px;
+        height: 34px;
+        background: linear-gradient(180deg, #4b5671 0%, #293044 100%);
+        clip-path: polygon(50% 0, 100% 100%, 0 100%);
+      }
+
+      .ear.left {
+        left: 10px;
+        transform: rotate(-9deg);
+      }
+
+      .ear.right {
+        right: 12px;
+        transform: rotate(9deg);
+      }
+
+      .face {
+        position: absolute;
+        inset: 18px 16px 12px;
+      }
+
+      .eye {
+        position: absolute;
+        top: 18px;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--star);
+        box-shadow: 0 0 12px rgba(255, 247, 214, 0.45);
+        animation: blink 6s infinite;
+      }
+
+      .eye.left {
+        left: 18px;
+      }
+
+      .eye.right {
+        right: 18px;
+      }
+
+      .nose {
+        position: absolute;
+        left: 50%;
+        top: 34px;
+        width: 12px;
+        height: 10px;
+        transform: translateX(-50%);
+        background: #ef9db1;
+        clip-path: polygon(50% 100%, 0 0, 100% 0);
+      }
+
+      .whiskers {
+        position: absolute;
+        left: 50%;
+        top: 42px;
+        width: 74px;
+        height: 26px;
+        transform: translateX(-50%);
+      }
+
+      .whiskers span {
+        position: absolute;
+        width: 30px;
+        height: 1.5px;
+        background: rgba(255, 255, 255, 0.52);
+      }
+
+      .whiskers span:nth-child(1) {
+        left: 0;
+        top: 6px;
+        transform: rotate(12deg);
+      }
+
+      .whiskers span:nth-child(2) {
+        left: 0;
+        top: 18px;
+        transform: rotate(-6deg);
+      }
+
+      .whiskers span:nth-child(3) {
+        right: 0;
+        top: 6px;
+        transform: rotate(-12deg);
+      }
+
+      .whiskers span:nth-child(4) {
+        right: 0;
+        top: 18px;
+        transform: rotate(6deg);
+      }
+
+      .tail {
+        position: absolute;
+        left: -10px;
+        bottom: 36px;
+        width: 108px;
+        height: 108px;
+        border: 22px solid transparent;
+        border-top-color: #54617e;
+        border-left-color: #54617e;
+        border-radius: 50%;
+        transform: rotate(-26deg);
+      }
+
+      .paw {
+        position: absolute;
+        bottom: 6px;
+        width: 42px;
+        height: 24px;
+        background: #3e4761;
+        border-radius: 999px;
+      }
+
+      .paw.p1 {
+        left: 98px;
+      }
+
+      .paw.p2 {
+        left: 148px;
+      }
+
+      .panel {
+        position: relative;
+        display: flex;
+        align-items: center;
+        padding: 48px 42px;
+        background:
+          linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent 18%),
+          var(--card);
+      }
+
+      .letter {
+        position: relative;
+        width: min(430px, 100%);
+        padding: 36px 32px 32px;
+        border-radius: 26px;
+        background:
+          radial-gradient(circle at top right, rgba(244, 183, 200, 0.15), transparent 30%),
+          rgba(9, 15, 28, 0.7);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.26);
+      }
+
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 14px;
+        border-radius: 999px;
+        background: rgba(244, 183, 200, 0.12);
+        color: var(--pink);
+        font-size: 0.78rem;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+      }
+
+      h1 {
+        margin-top: 18px;
+        font-family: "Cormorant Garamond", serif;
+        font-size: clamp(3rem, 6vw, 4.6rem);
+        line-height: 0.94;
+        font-weight: 600;
+        letter-spacing: -0.03em;
+      }
+
+      .lead {
+        margin-top: 18px;
+        color: var(--ink-soft);
+        font-size: 1rem;
+        line-height: 1.8;
+      }
+
+      .note {
+        margin-top: 22px;
+        padding: 18px 18px 18px 20px;
+        border-left: 3px solid rgba(244, 183, 200, 0.5);
+        background: rgba(255, 255, 255, 0.04);
+        border-radius: 16px;
+        color: #f7edf2;
+        line-height: 1.8;
+      }
+
+      .highlight {
+        color: var(--pink);
+      }
+
+      .footer {
+        margin-top: 26px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        color: var(--ink-soft);
+        font-size: 0.92rem;
+      }
+
+      .hearts {
+        display: inline-flex;
+        gap: 8px;
+        color: #ffcad8;
+        letter-spacing: 0.2em;
+      }
+
+      .signature {
+        margin-top: 24px;
+        font-family: "Cormorant Garamond", serif;
+        font-size: 1.6rem;
+        color: #ffe8ee;
+      }
+
+      @keyframes breathe {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(5px); }
+      }
+
+      @keyframes blink {
+        0%, 44%, 48%, 100% { transform: scaleY(1); opacity: 1; }
+        46% { transform: scaleY(0.08); opacity: 0.7; }
+      }
+
+      @keyframes cloud {
+        0%, 100% { transform: translateX(0); }
+        50% { transform: translateX(20px); }
+      }
+
+      @keyframes drift {
+        0%, 100% { transform: translate(0, 0) scale(1); }
+        50% { transform: translate(30px, -22px) scale(1.08); }
+      }
+
+      @media (max-width: 860px) {
+        .shell {
+          grid-template-columns: 1fr;
+        }
+
+        .scene {
+          min-height: 440px;
+        }
+
+        .panel {
+          padding: 28px 22px 30px;
+        }
+
+        .letter {
+          width: 100%;
+        }
+      }
+
+      @media (max-width: 560px) {
+        body {
+          padding: 14px;
+        }
+
+        .scene {
+          min-height: 380px;
+        }
+
+        .moon {
+          top: 42px;
+          right: 40px;
+          width: 86px;
+          height: 86px;
+        }
+
+        .blanket {
+          left: 10px;
+          right: 34px;
+          height: 150px;
+        }
+
+        .cat-wrap {
+          left: 14px;
+          bottom: 58px;
+          transform-origin: left bottom;
+          scale: 0.82;
+        }
+
+        h1 {
+          font-size: 2.8rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="aurora" aria-hidden="true"></div>
+    <main class="shell">
+      <section class="scene" aria-hidden="true">
+        <div class="moon"></div>
+        <div class="cloud c1"></div>
+        <div class="cloud c2"></div>
+        <div class="window-sill"></div>
+        <div class="blanket"></div>
+        <div class="cat-wrap">
+          <div class="tail"></div>
+          <div class="cat-body"></div>
+          <div class="cat-head">
+            <div class="ear left"></div>
+            <div class="ear right"></div>
+            <div class="face">
+              <div class="eye left"></div>
+              <div class="eye right"></div>
+              <div class="nose"></div>
+              <div class="whiskers">
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+            </div>
+          </div>
+          <div class="paw p1"></div>
+          <div class="paw p2"></div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <article class="letter">
+          <div class="pill">cat themed • good night mode</div>
+          <h1>Wieczorne mruczenie dla Ciebie</h1>
+          <p class="lead">
+            Gdyby ten mały kotek mógł teraz położyć się obok Ciebie, pewnie
+            zrobiłby dokładnie to samo co ja w myślach:
+            <span class="highlight">otulił Cię spokojem, ciepłem i cichym "już wszystko dobrze"</span>.
+          </p>
+          <div class="note">
+            Moja kochana, życzę Ci miękkiego wieczoru, lekkiej głowy i snu tak
+            spokojnego, jak mruczenie kota zwiniętego w kłębek na parapecie.
+            Niech ta noc zabierze z Ciebie całe zmęczenie, a zostawi tylko
+            ciepło, oddech i świadomość, że ktoś bardzo czule o Tobie myśli.
+          </div>
+          <p class="lead">
+            Jesteś moim ulubionym spokojem po długim dniu, moim najcieplejszym
+            "dobranoc" i tym rodzajem bliskości, do którego serce wraca odruchowo.
+          </p>
+          <div class="signature">śpij słodko, kocie serduszko</div>
+          <div class="footer">
+            <span>na dzisiejszy wieczór, tylko dla Ciebie</span>
+            <span class="hearts">♡ ♡ ♡</span>
+          </div>
+        </article>
+      </section>
+    </main>
+  </body>
+</html>
