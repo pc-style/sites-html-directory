@@ -1,0 +1,773 @@
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Dla Mamy</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;1,500&display=swap");
+
+      :root {
+        --sky: #87ceeb;
+        --sky-top: #5eb8d9;
+        --beetle-green: #2e7d32;
+        --beetle-light: #43a047;
+        --beetle-dark: #1b5e20;
+        --beetle-shine: #66bb6a;
+        --sun-gold: #f5c842;
+        --sun-deep: #e0a820;
+        --petal: #ffd740;
+        --petal-dark: #f5c200;
+        --center-brown: #5d4037;
+        --stem: #558b2f;
+        --stem-dark: #33691e;
+        --leaf: #7cb342;
+        --grass-1: #8bc34a;
+        --grass-2: #689f38;
+        --grass-3: #558b2f;
+        --road: #616161;
+        --road-light: #757575;
+        --dirt: #a1887f;
+        --paper: #fffef6;
+        --ink: #2c1e10;
+        --ink-soft: #6b5840;
+      }
+
+      * { box-sizing: border-box; margin: 0; }
+      html, body { min-height: 100%; }
+
+      body {
+        font-family: "Outfit", sans-serif;
+        color: var(--ink);
+        background: linear-gradient(180deg, var(--sky-top) 0%, var(--sky) 30%, #b5e0a0 55%, var(--grass-2) 70%, var(--grass-3) 100%);
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 24px;
+        overflow-x: hidden;
+      }
+
+      /* Clouds */
+      .clouds { position: fixed; inset: 0; pointer-events: none; overflow: hidden; }
+
+      .cloud {
+        position: absolute;
+        background: rgba(255,255,255,0.9);
+        border-radius: 999px;
+      }
+      .cloud::before, .cloud::after {
+        content: ""; position: absolute; background: inherit; border-radius: 50%;
+      }
+
+      .cloud.c1 { width: 180px; height: 52px; top: 6%; left: -8%; animation: drift 34s linear infinite; }
+      .cloud.c1::before { width: 72px; height: 72px; top: -32px; left: 30px; }
+      .cloud.c1::after { width: 56px; height: 56px; top: -24px; right: 26px; }
+
+      .cloud.c2 { width: 130px; height: 40px; top: 13%; left: -12%; animation: drift 42s linear infinite; animation-delay: -16s; opacity: 0.7; }
+      .cloud.c2::before { width: 52px; height: 52px; top: -24px; left: 22px; }
+      .cloud.c2::after { width: 44px; height: 44px; top: -18px; right: 18px; }
+
+      .cloud.c3 { width: 160px; height: 48px; top: 3%; left: -6%; animation: drift 38s linear infinite; animation-delay: -24s; opacity: 0.6; }
+      .cloud.c3::before { width: 64px; height: 64px; top: -28px; left: 28px; }
+      .cloud.c3::after { width: 50px; height: 50px; top: -22px; right: 22px; }
+
+      .scene { width: min(800px, 100%); position: relative; }
+
+      /* Illustration */
+      .illustration {
+        position: relative;
+        height: 500px;
+        background:
+          linear-gradient(180deg, #7ec8e8 0%, #a0d8ee 30%, transparent 55%),
+          linear-gradient(180deg, transparent 50%, #8aba60 62%, #6fa040 75%, #5a8a30 100%);
+        border-radius: 32px 32px 0 0;
+        overflow: hidden;
+        border: 1px solid rgba(85,139,47,0.2);
+        border-bottom: none;
+      }
+
+      /* Sun */
+      .sun {
+        position: absolute;
+        top: 30px;
+        left: 52px;
+        width: 82px; height: 82px;
+        border-radius: 50%;
+        background: radial-gradient(circle at 40% 40%, #fff8d4, var(--sun-gold) 50%, var(--sun-deep));
+        box-shadow: 0 0 44px rgba(245,200,66,0.7), 0 0 110px rgba(245,200,66,0.25);
+        animation: glow 5s ease-in-out infinite;
+      }
+
+      /* Dirt road */
+      .road {
+        position: absolute;
+        bottom: 0; left: 0; right: 0;
+        height: 110px;
+        background:
+          linear-gradient(180deg, var(--dirt) 0%, #8d7560 50%, #7a6550 100%);
+      }
+      .road::before {
+        content: "";
+        position: absolute;
+        top: 50%; left: 0; right: 0;
+        height: 3px;
+        background: repeating-linear-gradient(90deg, rgba(255,255,255,0.4) 0 28px, transparent 28px 52px);
+      }
+
+      /* VW Beetle */
+      .beetle-car {
+        position: absolute;
+        bottom: 38px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 280px;
+        height: 160px;
+        animation: car-bounce 3s ease-in-out infinite;
+      }
+
+      /* Body lower */
+      .car-body {
+        position: absolute;
+        bottom: 32px; left: 10px;
+        width: 260px; height: 62px;
+        background: linear-gradient(180deg, var(--beetle-light), var(--beetle-green));
+        border-radius: 12px 12px 8px 8px;
+        box-shadow:
+          inset 0 3px 0 rgba(255,255,255,0.15),
+          inset 0 -3px 0 rgba(0,0,0,0.1),
+          0 6px 18px rgba(0,0,0,0.25);
+      }
+
+      /* Chrome bumper front */
+      .bumper-front {
+        position: absolute;
+        bottom: 40px; right: 2px;
+        width: 14px; height: 28px;
+        background: linear-gradient(180deg, #e0e0e0, #bdbdbd);
+        border-radius: 0 6px 6px 0;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.5);
+      }
+
+      /* Chrome bumper rear */
+      .bumper-rear {
+        position: absolute;
+        bottom: 40px; left: 2px;
+        width: 14px; height: 28px;
+        background: linear-gradient(180deg, #e0e0e0, #bdbdbd);
+        border-radius: 6px 0 0 6px;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.5);
+      }
+
+      /* Cabin / roof */
+      .car-cabin {
+        position: absolute;
+        bottom: 88px; left: 60px;
+        width: 160px; height: 68px;
+        background: linear-gradient(180deg, var(--beetle-shine), var(--beetle-light) 40%, var(--beetle-green));
+        border-radius: 80px 80px 0 0;
+        box-shadow:
+          inset 0 4px 0 rgba(255,255,255,0.2),
+          inset 0 -2px 0 rgba(0,0,0,0.08);
+      }
+
+      /* Windows */
+      .window {
+        position: absolute;
+        background: linear-gradient(180deg, #b3e5fc, #81d4fa 50%, #4fc3f7);
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.6);
+      }
+
+      .window.rear {
+        bottom: 92px; left: 68px;
+        width: 56px; height: 44px;
+        border-radius: 40px 20px 0 0;
+        clip-path: polygon(8% 100%, 0% 0%, 100% 0%, 100% 100%);
+      }
+
+      .window.front {
+        bottom: 92px; left: 156px;
+        width: 56px; height: 44px;
+        border-radius: 20px 40px 0 0;
+        clip-path: polygon(0% 100%, 0% 0%, 100% 0%, 92% 100%);
+      }
+
+      .window-divider {
+        position: absolute;
+        bottom: 92px; left: 138px;
+        width: 4px; height: 48px;
+        background: var(--beetle-green);
+        border-radius: 2px;
+        z-index: 2;
+      }
+
+      /* Headlight */
+      .headlight {
+        position: absolute;
+        bottom: 60px; right: 14px;
+        width: 22px; height: 22px;
+        border-radius: 50%;
+        background: radial-gradient(circle at 40% 40%, #fff9c4, #ffee58, #fdd835);
+        box-shadow: 0 0 12px rgba(253,216,53,0.6);
+        border: 2px solid #bdbdbd;
+      }
+
+      /* Tail light */
+      .taillight {
+        position: absolute;
+        bottom: 58px; left: 16px;
+        width: 14px; height: 18px;
+        border-radius: 4px;
+        background: radial-gradient(circle, #ef5350, #c62828);
+        box-shadow: 0 0 8px rgba(198,40,40,0.4);
+        border: 1.5px solid #bdbdbd;
+      }
+
+      /* Wheels */
+      .wheel {
+        position: absolute;
+        bottom: 18px;
+        width: 50px; height: 50px;
+        border-radius: 50%;
+        background:
+          radial-gradient(circle, #424242 0%, #212121 60%, #111 100%);
+        box-shadow:
+          0 3px 10px rgba(0,0,0,0.4),
+          inset 0 2px 4px rgba(255,255,255,0.1);
+        z-index: 3;
+      }
+
+      .wheel::before {
+        content: "";
+        position: absolute;
+        top: 50%; left: 50%;
+        transform: translate(-50%,-50%);
+        width: 22px; height: 22px;
+        border-radius: 50%;
+        background: radial-gradient(circle at 40% 40%, #e0e0e0, #9e9e9e);
+        box-shadow: inset 0 1px 2px rgba(255,255,255,0.6);
+      }
+
+      .wheel::after {
+        content: "";
+        position: absolute;
+        top: 50%; left: 50%;
+        transform: translate(-50%,-50%);
+        width: 6px; height: 6px;
+        border-radius: 50%;
+        background: #616161;
+      }
+
+      .wheel.front-w { right: 30px; }
+      .wheel.rear-w { left: 30px; }
+
+      /* Wheel arches */
+      .arch {
+        position: absolute;
+        bottom: 28px;
+        width: 62px; height: 32px;
+        background: var(--beetle-dark);
+        border-radius: 32px 32px 0 0;
+        z-index: 2;
+      }
+      .arch.front-a { right: 24px; }
+      .arch.rear-a { left: 24px; }
+
+      /* Door handle */
+      .door-handle {
+        position: absolute;
+        bottom: 76px; left: 142px;
+        width: 18px; height: 5px;
+        background: linear-gradient(180deg, #e0e0e0, #bdbdbd);
+        border-radius: 3px;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+      }
+
+      /* Running board */
+      .running-board {
+        position: absolute;
+        bottom: 30px; left: 56px;
+        width: 168px; height: 5px;
+        background: linear-gradient(180deg, #9e9e9e, #757575);
+        border-radius: 2px;
+      }
+
+      /* VW logo */
+      .vw-logo {
+        position: absolute;
+        bottom: 94px; left: 50%;
+        transform: translateX(-50%);
+        width: 20px; height: 20px;
+        border-radius: 50%;
+        background: #e0e0e0;
+        border: 2px solid #bdbdbd;
+        z-index: 4;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      /* Exhaust puff */
+      .exhaust {
+        position: absolute;
+        bottom: 34px; left: -20px;
+      }
+
+      .puff {
+        position: absolute;
+        border-radius: 50%;
+        background: rgba(200,200,200,0.5);
+        animation: puff-out 3s ease-out infinite;
+      }
+
+      .puff:nth-child(1) { width: 16px; height: 16px; left: 0; bottom: 0; animation-delay: 0s; }
+      .puff:nth-child(2) { width: 12px; height: 12px; left: -8px; bottom: 4px; animation-delay: 0.8s; }
+      .puff:nth-child(3) { width: 10px; height: 10px; left: -14px; bottom: 2px; animation-delay: 1.6s; }
+
+      /* Sunflowers */
+      .sunflower {
+        position: absolute;
+        bottom: 110px;
+      }
+
+      .sf-stem {
+        position: absolute;
+        bottom: 0; left: 50%;
+        transform: translateX(-50%);
+        width: 7px;
+        border-radius: 4px;
+        background: linear-gradient(180deg, var(--stem), var(--stem-dark));
+      }
+
+      .sf-leaf {
+        position: absolute;
+        width: 28px; height: 14px;
+        background: var(--leaf);
+        border-radius: 50% 50% 50% 0;
+      }
+      .sf-leaf.r { border-radius: 50% 50% 0 50%; }
+
+      .sf-head {
+        position: absolute;
+        top: 0; left: 50%;
+        transform: translateX(-50%);
+        width: 44px; height: 44px;
+      }
+
+      .sf-petals-ring {
+        position: absolute;
+        inset: 0;
+      }
+
+      .sf-petal {
+        position: absolute;
+        top: 50%; left: 50%;
+        width: 14px; height: 24px;
+        background: var(--petal);
+        border-radius: 50%;
+        transform-origin: center bottom;
+        margin-left: -7px;
+        margin-top: -24px;
+        box-shadow: inset 0 -3px 0 rgba(200,160,0,0.2);
+      }
+
+      .sf-center {
+        position: absolute;
+        top: 50%; left: 50%;
+        transform: translate(-50%,-50%);
+        width: 22px; height: 22px;
+        border-radius: 50%;
+        background: radial-gradient(circle, #4e342e, var(--center-brown), #6d4c41);
+        z-index: 2;
+      }
+
+      .sf.a { left: 6%; }
+      .sf.a .sf-stem { height: 200px; }
+      .sf.a .sf-leaf { bottom: 80px; left: 8px; transform: rotate(-30deg); }
+
+      .sf.b { left: 18%; }
+      .sf.b .sf-stem { height: 240px; }
+      .sf.b .sf-leaf { bottom: 100px; left: 8px; transform: rotate(-35deg); }
+      .sf.b .sf-leaf.r { left: auto; right: 8px; transform: rotate(35deg); bottom: 160px; }
+
+      .sf.c { right: 18%; }
+      .sf.c .sf-stem { height: 230px; }
+      .sf.c .sf-leaf { bottom: 90px; left: 8px; transform: rotate(-28deg); }
+
+      .sf.d { right: 4%; }
+      .sf.d .sf-stem { height: 190px; }
+
+      .sf.e { left: 36%; }
+      .sf.e .sf-stem { height: 160px; width: 5px; }
+      .sf.e .sf-head { width: 34px; height: 34px; }
+      .sf.e .sf-petal { width: 11px; height: 18px; margin-left: -5.5px; margin-top: -18px; }
+      .sf.e .sf-center { width: 16px; height: 16px; }
+
+      .sf.f { right: 34%; }
+      .sf.f .sf-stem { height: 170px; width: 5px; }
+      .sf.f .sf-head { width: 36px; height: 36px; }
+      .sf.f .sf-petal { width: 12px; height: 20px; margin-left: -6px; margin-top: -20px; }
+      .sf.f .sf-center { width: 18px; height: 18px; }
+
+      /* Grass overlay at bottom of field above road */
+      .grass-edge {
+        position: absolute;
+        bottom: 108px; left: 0; right: 0;
+        height: 30px;
+        background:
+          repeating-linear-gradient(
+            85deg,
+            var(--grass-1) 0 8px,
+            var(--grass-2) 8px 14px,
+            var(--grass-1) 14px 20px
+          );
+        mask-image: linear-gradient(180deg, transparent 0%, black 60%);
+        border-radius: 0 0 4px 4px;
+      }
+
+      /* Text card */
+      .card {
+        background: var(--paper);
+        border-radius: 0 0 32px 32px;
+        border: 1px solid rgba(85,139,47,0.15);
+        border-top: 3px solid var(--beetle-green);
+        padding: 36px 40px 32px;
+      }
+
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 7px 16px;
+        background: var(--beetle-green);
+        color: white;
+        font-size: 0.76rem;
+        font-weight: 700;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        border-radius: 6px;
+        margin-bottom: 16px;
+      }
+
+      h1 {
+        font-family: "Playfair Display", serif;
+        font-size: clamp(2.6rem, 5.5vw, 4rem);
+        font-weight: 700;
+        line-height: 1.05;
+        letter-spacing: -0.02em;
+        margin-bottom: 6px;
+      }
+
+      h1 em {
+        display: block;
+        color: var(--beetle-green);
+        font-weight: 500;
+      }
+
+      .lead {
+        font-size: 1.02rem;
+        color: var(--ink-soft);
+        margin-bottom: 24px;
+        max-width: 38ch;
+        line-height: 1.65;
+      }
+
+      .letter {
+        padding: 26px 28px;
+        background: linear-gradient(135deg, rgba(46,125,50,0.05), rgba(245,200,66,0.04));
+        border-radius: 20px;
+        border-left: 4px solid var(--beetle-green);
+        margin-bottom: 20px;
+      }
+
+      .letter p {
+        font-size: clamp(1.02rem, 1.5vw, 1.14rem);
+        line-height: 1.9;
+        color: #3a2e18;
+      }
+
+      .letter p + p { margin-top: 14px; }
+      .letter strong { color: var(--beetle-dark); }
+
+      .tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+
+      .tag {
+        padding: 8px 16px;
+        border-radius: 999px;
+        font-size: 0.84rem;
+        font-weight: 700;
+      }
+
+      .tag.t1 { background: rgba(46,125,50,0.1); color: var(--beetle-dark); border: 1.5px solid rgba(46,125,50,0.25); }
+      .tag.t2 { background: rgba(245,200,66,0.12); color: var(--sun-deep); border: 1.5px solid rgba(245,200,66,0.3); }
+      .tag.t3 { background: rgba(85,139,47,0.1); color: var(--stem-dark); border: 1.5px solid rgba(85,139,47,0.25); }
+
+      .footer {
+        padding-top: 16px;
+        border-top: 1px dashed rgba(85,139,47,0.2);
+        color: var(--ink-soft);
+        font-size: 0.96rem;
+        line-height: 1.7;
+        font-style: italic;
+      }
+
+      .footer span {
+        font-family: "Playfair Display", serif;
+        font-size: 1.15rem;
+        color: var(--beetle-green);
+        font-weight: 700;
+        font-style: normal;
+      }
+
+      @keyframes drift {
+        0% { transform: translateX(0); }
+        100% { transform: translateX(calc(100vw + 220px)); }
+      }
+
+      @keyframes glow {
+        0%, 100% { box-shadow: 0 0 44px rgba(245,200,66,0.7), 0 0 110px rgba(245,200,66,0.25); }
+        50% { box-shadow: 0 0 58px rgba(245,200,66,0.85), 0 0 140px rgba(245,200,66,0.35); }
+      }
+
+      @keyframes car-bounce {
+        0%, 100% { transform: translateX(-50%) translateY(0); }
+        50% { transform: translateX(-50%) translateY(-3px); }
+      }
+
+      @keyframes puff-out {
+        0% { transform: translate(0,0) scale(1); opacity: 0.5; }
+        100% { transform: translate(-30px, -10px) scale(2.2); opacity: 0; }
+      }
+
+      @media (max-width: 700px) {
+        body { padding: 14px; }
+        .illustration { height: 380px; border-radius: 24px 24px 0 0; }
+        .card { padding: 26px 22px; border-radius: 0 0 24px 24px; }
+        h1 { font-size: clamp(2.1rem, 9vw, 3.2rem); }
+        .beetle-car { width: 220px; height: 130px; bottom: 30px; }
+        .car-body { width: 200px; height: 50px; }
+        .car-cabin { width: 126px; height: 54px; left: 46px; bottom: 72px; }
+        .window.rear { width: 44px; height: 34px; left: 52px; bottom: 74px; }
+        .window.front { width: 44px; height: 34px; left: 122px; bottom: 74px; }
+        .window-divider { left: 108px; height: 38px; bottom: 74px; }
+        .wheel { width: 40px; height: 40px; bottom: 14px; }
+        .wheel::before { width: 18px; height: 18px; }
+        .sf.e, .sf.f { display: none; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="clouds" aria-hidden="true">
+      <div class="cloud c1"></div>
+      <div class="cloud c2"></div>
+      <div class="cloud c3"></div>
+    </div>
+
+    <div class="scene">
+      <div class="illustration">
+        <div class="sun"></div>
+
+        <!-- Sunflowers behind the car -->
+        <div class="sunflower sf a">
+          <div class="sf-stem"></div>
+          <div class="sf-leaf"></div>
+          <div class="sf-head">
+            <div class="sf-petals-ring">
+              <div class="sf-petal" style="transform:rotate(0deg) translateY(-12px)"></div>
+              <div class="sf-petal" style="transform:rotate(30deg) translateY(-12px)"></div>
+              <div class="sf-petal" style="transform:rotate(60deg) translateY(-12px)"></div>
+              <div class="sf-petal" style="transform:rotate(90deg) translateY(-12px)"></div>
+              <div class="sf-petal" style="transform:rotate(120deg) translateY(-12px)"></div>
+              <div class="sf-petal" style="transform:rotate(150deg) translateY(-12px)"></div>
+              <div class="sf-petal" style="transform:rotate(180deg) translateY(-12px)"></div>
+              <div class="sf-petal" style="transform:rotate(210deg) translateY(-12px)"></div>
+              <div class="sf-petal" style="transform:rotate(240deg) translateY(-12px)"></div>
+              <div class="sf-petal" style="transform:rotate(270deg) translateY(-12px)"></div>
+              <div class="sf-petal" style="transform:rotate(300deg) translateY(-12px)"></div>
+              <div class="sf-petal" style="transform:rotate(330deg) translateY(-12px)"></div>
+            </div>
+            <div class="sf-center"></div>
+          </div>
+        </div>
+
+        <div class="sunflower sf b">
+          <div class="sf-stem"></div>
+          <div class="sf-leaf"></div>
+          <div class="sf-leaf r"></div>
+          <div class="sf-head">
+            <div class="sf-petals-ring">
+              <div class="sf-petal" style="transform:rotate(0deg) translateY(-12px)"></div>
+              <div class="sf-petal" style="transform:rotate(30deg) translateY(-12px)"></div>
+              <div class="sf-petal" style="transform:rotate(60deg) translateY(-12px)"></div>
+              <div class="sf-petal" style="transform:rotate(90deg) translateY(-12px)"></div>
+              <div class="sf-petal" style="transform:rotate(120deg) translateY(-12px)"></div>
+              <div class="sf-petal" style="transform:rotate(150deg) translateY(-12px)"></div>
+              <div class="sf-petal" style="transform:rotate(180deg) translateY(-12px)"></div>
+              <div class="sf-petal" style="transform:rotate(210deg) translateY(-12px)"></div>
+              <div class="sf-petal" style="transform:rotate(240deg) translateY(-12px)"></div>
+              <div class="sf-petal" style="transform:rotate(270deg) translateY(-12px)"></div>
+              <div class="sf-petal" style="transform:rotate(300deg) translateY(-12px)"></div>
+              <div class="sf-petal" style="transform:rotate(330deg) translateY(-12px)"></div>
+            </div>
+            <div class="sf-center"></div>
+          </div>
+        </div>
+
+        <div class="sunflower sf e">
+          <div class="sf-stem"></div>
+          <div class="sf-head">
+            <div class="sf-petals-ring">
+              <div class="sf-petal" style="transform:rotate(0deg) translateY(-9px)"></div>
+              <div class="sf-petal" style="transform:rotate(36deg) translateY(-9px)"></div>
+              <div class="sf-petal" style="transform:rotate(72deg) translateY(-9px)"></div>
+              <div class="sf-petal" style="transform:rotate(108deg) translateY(-9px)"></div>
+              <div class="sf-petal" style="transform:rotate(144deg) translateY(-9px)"></div>
+              <div class="sf-petal" style="transform:rotate(180deg) translateY(-9px)"></div>
+              <div class="sf-petal" style="transform:rotate(216deg) translateY(-9px)"></div>
+              <div class="sf-petal" style="transform:rotate(252deg) translateY(-9px)"></div>
+              <div class="sf-petal" style="transform:rotate(288deg) translateY(-9px)"></div>
+              <div class="sf-petal" style="transform:rotate(324deg) translateY(-9px)"></div>
+            </div>
+            <div class="sf-center"></div>
+          </div>
+        </div>
+
+        <div class="sunflower sf f">
+          <div class="sf-stem"></div>
+          <div class="sf-head">
+            <div class="sf-petals-ring">
+              <div class="sf-petal" style="transform:rotate(0deg) translateY(-10px)"></div>
+              <div class="sf-petal" style="transform:rotate(36deg) translateY(-10px)"></div>
+              <div class="sf-petal" style="transform:rotate(72deg) translateY(-10px)"></div>
+              <div class="sf-petal" style="transform:rotate(108deg) translateY(-10px)"></div>
+              <div class="sf-petal" style="transform:rotate(144deg) translateY(-10px)"></div>
+              <div class="sf-petal" style="transform:rotate(180deg) translateY(-10px)"></div>
+              <div class="sf-petal" style="transform:rotate(216deg) translateY(-10px)"></div>
+              <div class="sf-petal" style="transform:rotate(252deg) translateY(-10px)"></div>
+              <div class="sf-petal" style="transform:rotate(288deg) translateY(-10px)"></div>
+              <div class="sf-petal" style="transform:rotate(324deg) translateY(-10px)"></div>
+            </div>
+            <div class="sf-center"></div>
+          </div>
+        </div>
+
+        <div class="sunflower sf c">
+          <div class="sf-stem"></div>
+          <div class="sf-leaf"></div>
+          <div class="sf-head">
+            <div class="sf-petals-ring">
+              <div class="sf-petal" style="transform:rotate(0deg) translateY(-12px)"></div>
+              <div class="sf-petal" style="transform:rotate(30deg) translateY(-12px)"></div>
+              <div class="sf-petal" style="transform:rotate(60deg) translateY(-12px)"></div>
+              <div class="sf-petal" style="transform:rotate(90deg) translateY(-12px)"></div>
+              <div class="sf-petal" style="transform:rotate(120deg) translateY(-12px)"></div>
+              <div class="sf-petal" style="transform:rotate(150deg) translateY(-12px)"></div>
+              <div class="sf-petal" style="transform:rotate(180deg) translateY(-12px)"></div>
+              <div class="sf-petal" style="transform:rotate(210deg) translateY(-12px)"></div>
+              <div class="sf-petal" style="transform:rotate(240deg) translateY(-12px)"></div>
+              <div class="sf-petal" style="transform:rotate(270deg) translateY(-12px)"></div>
+              <div class="sf-petal" style="transform:rotate(300deg) translateY(-12px)"></div>
+              <div class="sf-petal" style="transform:rotate(330deg) translateY(-12px)"></div>
+            </div>
+            <div class="sf-center"></div>
+          </div>
+        </div>
+
+        <div class="sunflower sf d">
+          <div class="sf-stem"></div>
+          <div class="sf-head">
+            <div class="sf-petals-ring">
+              <div class="sf-petal" style="transform:rotate(0deg) translateY(-12px)"></div>
+              <div class="sf-petal" style="transform:rotate(30deg) translateY(-12px)"></div>
+              <div class="sf-petal" style="transform:rotate(60deg) translateY(-12px)"></div>
+              <div class="sf-petal" style="transform:rotate(90deg) translateY(-12px)"></div>
+              <div class="sf-petal" style="transform:rotate(120deg) translateY(-12px)"></div>
+              <div class="sf-petal" style="transform:rotate(150deg) translateY(-12px)"></div>
+              <div class="sf-petal" style="transform:rotate(180deg) translateY(-12px)"></div>
+              <div class="sf-petal" style="transform:rotate(210deg) translateY(-12px)"></div>
+              <div class="sf-petal" style="transform:rotate(240deg) translateY(-12px)"></div>
+              <div class="sf-petal" style="transform:rotate(270deg) translateY(-12px)"></div>
+              <div class="sf-petal" style="transform:rotate(300deg) translateY(-12px)"></div>
+              <div class="sf-petal" style="transform:rotate(330deg) translateY(-12px)"></div>
+            </div>
+            <div class="sf-center"></div>
+          </div>
+        </div>
+
+        <div class="grass-edge"></div>
+
+        <!-- Road -->
+        <div class="road"></div>
+
+        <!-- VW Beetle -->
+        <div class="beetle-car" aria-hidden="true">
+          <div class="exhaust">
+            <div class="puff"></div>
+            <div class="puff"></div>
+            <div class="puff"></div>
+          </div>
+          <div class="bumper-rear"></div>
+          <div class="bumper-front"></div>
+          <div class="car-body"></div>
+          <div class="arch rear-a"></div>
+          <div class="arch front-a"></div>
+          <div class="car-cabin"></div>
+          <div class="vw-logo"></div>
+          <div class="window rear"></div>
+          <div class="window front"></div>
+          <div class="window-divider"></div>
+          <div class="headlight"></div>
+          <div class="taillight"></div>
+          <div class="running-board"></div>
+          <div class="door-handle"></div>
+          <div class="wheel rear-w"></div>
+          <div class="wheel front-w"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="badge">Dla Mamy &bull; 22 kwietnia 2026</div>
+        <h1>
+          Cześć Mamo,
+          <em>mam coś dla Ciebie.</em>
+        </h1>
+        <p class="lead">Mała karteczka w środku dnia, bo zasługujesz na uśmiech.</p>
+
+        <div class="letter">
+          <p>
+            Wiesz, Mamo, jesteś trochę jak ten zielony Garbus: klasyczna, niezawodna
+            i <strong>zawsze budząca uśmiech, gdziekolwiek się pojawisz</strong>.
+          </p>
+          <p>
+            Można Cię postawić na tle pól słoneczników albo w środku miasta
+            i wszędzie będziesz tą, na którą ludzie patrzą z zachwytem.
+            Bo masz w sobie coś, czego nie da się podmienić:
+            ciepło, siłę i ten rodzaj piękna, które <strong>nigdy nie wychodzi z mody</strong>.
+          </p>
+          <p>
+            Życzę Ci popołudnia lekkiego jak przejażdżka z otwartym oknem,
+            ciepłego jak słońce nad polem słoneczników
+            i pełnego tej radości, którą Ty codziennie dajesz innym.
+          </p>
+        </div>
+
+        <div class="tags">
+          <span class="tag t1">tryb: klasyka na drodze</span>
+          <span class="tag t2">energia: słonecznikowe ciepło</span>
+          <span class="tag t3">od: Twojego dzieciaka</span>
+        </div>
+
+        <div class="footer">
+          Dziękuję, że jesteś. Za wszystko. Zawsze.
+          <br />
+          <span>Kocham Cię, Mamo.</span>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
