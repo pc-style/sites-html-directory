@@ -1,0 +1,860 @@
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Kocie Dobranoc</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap");
+
+      :root {
+        --night: #11162b;
+        --night-deep: #090d1d;
+        --ink: #f7eedf;
+        --ink-soft: #d8c8b5;
+        --pearl: #fff7eb;
+        --gold: #f4c88d;
+        --gold-deep: #d9a55d;
+        --blush: #efb3bf;
+        --plum: #6d587f;
+        --mauve: #8b739e;
+        --glass: rgba(20, 25, 47, 0.62);
+        --line: rgba(255, 245, 231, 0.12);
+        --shadow: 0 36px 90px rgba(4, 6, 16, 0.42);
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+      }
+
+      html,
+      body {
+        min-height: 100%;
+      }
+
+      body {
+        font-family: "Plus Jakarta Sans", sans-serif;
+        color: var(--ink);
+        background:
+          radial-gradient(circle at 16% 12%, rgba(255, 240, 210, 0.14), transparent 18%),
+          radial-gradient(circle at 88% 14%, rgba(239, 179, 191, 0.16), transparent 16%),
+          radial-gradient(circle at 76% 82%, rgba(139, 115, 158, 0.2), transparent 24%),
+          linear-gradient(180deg, #18203b 0%, #0d1327 56%, #070a16 100%);
+        padding: 24px;
+        overflow-x: hidden;
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background-image:
+          radial-gradient(circle at 12% 18%, rgba(255, 255, 255, 0.92) 0 1.5px, transparent 2px),
+          radial-gradient(circle at 24% 34%, rgba(255, 255, 255, 0.72) 0 1.4px, transparent 1.9px),
+          radial-gradient(circle at 72% 16%, rgba(255, 255, 255, 0.86) 0 1.6px, transparent 2px),
+          radial-gradient(circle at 86% 24%, rgba(255, 255, 255, 0.8) 0 1.3px, transparent 1.8px),
+          radial-gradient(circle at 64% 64%, rgba(255, 255, 255, 0.62) 0 1.4px, transparent 2px),
+          radial-gradient(circle at 32% 72%, rgba(255, 255, 255, 0.7) 0 1.5px, transparent 2px);
+        opacity: 0.9;
+        pointer-events: none;
+      }
+
+      body::after {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background:
+          linear-gradient(130deg, rgba(255, 255, 255, 0.04), transparent 24%),
+          linear-gradient(310deg, rgba(255, 226, 185, 0.04), transparent 28%);
+        mix-blend-mode: screen;
+        pointer-events: none;
+      }
+
+      .aurora {
+        position: fixed;
+        inset: auto -16vmax -14vmax auto;
+        width: 54vmax;
+        height: 54vmax;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(239, 179, 191, 0.2), transparent 64%);
+        filter: blur(18px);
+        animation: drift 14s ease-in-out infinite;
+        pointer-events: none;
+      }
+
+      .shell {
+        position: relative;
+        width: min(1120px, 100%);
+        min-height: calc(100vh - 48px);
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: 1.05fr 0.95fr;
+        border-radius: 34px;
+        overflow: hidden;
+        background:
+          linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02)),
+          rgba(8, 12, 24, 0.64);
+        border: 1px solid rgba(255, 247, 235, 0.16);
+        box-shadow: var(--shadow);
+        backdrop-filter: blur(14px);
+      }
+
+      .scene {
+        position: relative;
+        min-height: 480px;
+        background:
+          radial-gradient(circle at 72% 18%, rgba(255, 232, 196, 0.12), transparent 26%),
+          linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent 22%),
+          linear-gradient(180deg, #131a32 0%, #0b1021 100%);
+      }
+
+      .moon {
+        position: absolute;
+        top: 68px;
+        right: 88px;
+        width: 124px;
+        height: 124px;
+        border-radius: 50%;
+        background: radial-gradient(circle at 38% 34%, #fffdf7 0%, #f8e8c7 54%, #edc88e 100%);
+        box-shadow:
+          0 0 36px rgba(247, 216, 162, 0.42),
+          0 0 116px rgba(244, 200, 141, 0.16);
+      }
+
+      .moon::after {
+        content: "";
+        position: absolute;
+        inset: 16px 18px auto auto;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: rgba(209, 170, 113, 0.2);
+      }
+
+      .moon-glow {
+        position: absolute;
+        top: 30px;
+        right: 42px;
+        width: 210px;
+        height: 210px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(255, 236, 205, 0.18), transparent 66%);
+        animation: breathe 8s ease-in-out infinite;
+      }
+
+      .window {
+        position: absolute;
+        inset: 88px 70px 146px;
+        border-radius: 30px;
+        background:
+          linear-gradient(180deg, rgba(255, 255, 255, 0.06), transparent 20%),
+          linear-gradient(180deg, #16203e 0%, #0f1732 48%, #0b1024 100%);
+        border: 12px solid rgba(118, 89, 78, 0.75);
+        overflow: hidden;
+        box-shadow:
+          inset 0 0 0 1px rgba(255, 248, 236, 0.08),
+          0 20px 40px rgba(0, 0, 0, 0.18);
+      }
+
+      .window::before,
+      .window::after {
+        content: "";
+        position: absolute;
+        background: rgba(126, 96, 83, 0.85);
+      }
+
+      .window::before {
+        top: 0;
+        bottom: 0;
+        left: 50%;
+        width: 10px;
+        transform: translateX(-50%);
+      }
+
+      .window::after {
+        left: 0;
+        right: 0;
+        top: 50%;
+        height: 10px;
+        transform: translateY(-50%);
+      }
+
+      .curtain {
+        position: absolute;
+        top: 64px;
+        bottom: 126px;
+        width: 120px;
+        background:
+          linear-gradient(180deg, rgba(255, 255, 255, 0.08), transparent 14%),
+          repeating-linear-gradient(90deg, #6f567e 0 16px, #61486f 16px 32px);
+        opacity: 0.96;
+      }
+
+      .curtain.left {
+        left: 18px;
+        border-radius: 28px 16px 16px 0;
+        clip-path: polygon(0 0, 100% 0, 78% 100%, 0 100%);
+      }
+
+      .curtain.right {
+        right: 18px;
+        border-radius: 16px 28px 0 16px;
+        clip-path: polygon(22% 0, 100% 0, 100% 100%, 0 100%);
+      }
+
+      .stars span {
+        position: absolute;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: rgba(255, 252, 247, 0.9);
+        box-shadow: 0 0 12px rgba(255, 242, 211, 0.42);
+        animation: twinkle 5s ease-in-out infinite;
+      }
+
+      .stars span:nth-child(1) {
+        top: 24%;
+        left: 18%;
+        animation-delay: 0s;
+      }
+
+      .stars span:nth-child(2) {
+        top: 16%;
+        left: 34%;
+        animation-delay: 1.2s;
+      }
+
+      .stars span:nth-child(3) {
+        top: 28%;
+        left: 68%;
+        animation-delay: 2s;
+      }
+
+      .stars span:nth-child(4) {
+        top: 38%;
+        left: 24%;
+        animation-delay: 2.8s;
+      }
+
+      .stars span:nth-child(5) {
+        top: 18%;
+        left: 82%;
+        animation-delay: 0.6s;
+      }
+
+      .stars span:nth-child(6) {
+        top: 34%;
+        left: 54%;
+        animation-delay: 1.7s;
+      }
+
+      .cityline {
+        position: absolute;
+        left: 22px;
+        right: 22px;
+        bottom: 108px;
+        height: 116px;
+        background:
+          linear-gradient(90deg, transparent 0 6%, #0a1021 6% 14%, transparent 14% 18%, #0c1327 18% 31%, transparent 31% 34%, #09101f 34% 47%, transparent 47% 52%, #0b1123 52% 62%, transparent 62% 66%, #09101f 66% 78%, transparent 78% 82%, #0b1225 82% 94%, transparent 94% 100%);
+        filter: drop-shadow(0 -4px 12px rgba(248, 214, 152, 0.08));
+      }
+
+      .cityline::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+          radial-gradient(circle at 10% 76%, rgba(252, 226, 160, 0.28) 0 1px, transparent 1.5px),
+          radial-gradient(circle at 14% 54%, rgba(252, 226, 160, 0.24) 0 1px, transparent 1.5px),
+          radial-gradient(circle at 28% 64%, rgba(252, 226, 160, 0.22) 0 1px, transparent 1.5px),
+          radial-gradient(circle at 40% 70%, rgba(252, 226, 160, 0.26) 0 1px, transparent 1.5px),
+          radial-gradient(circle at 58% 66%, rgba(252, 226, 160, 0.24) 0 1px, transparent 1.5px),
+          radial-gradient(circle at 72% 58%, rgba(252, 226, 160, 0.22) 0 1px, transparent 1.5px),
+          radial-gradient(circle at 88% 68%, rgba(252, 226, 160, 0.26) 0 1px, transparent 1.5px);
+      }
+
+      .sill {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 134px;
+        background:
+          linear-gradient(180deg, rgba(255, 255, 255, 0.06), transparent 10%),
+          linear-gradient(90deg, #5b403a 0 20%, #6a4a40 20% 40%, #5e433b 40% 60%, #6a4a40 60% 80%, #5b403a 80% 100%);
+        border-top: 1px solid rgba(255, 239, 217, 0.08);
+      }
+
+      .blanket {
+        position: absolute;
+        left: 74px;
+        right: 82px;
+        bottom: 30px;
+        height: 92px;
+        border-radius: 999px;
+        background:
+          radial-gradient(circle at 24% 26%, rgba(255, 255, 255, 0.14), transparent 20%),
+          linear-gradient(135deg, #7e668f 0%, #624f76 48%, #4f415f 100%);
+        box-shadow:
+          inset 0 12px 22px rgba(255, 255, 255, 0.08),
+          0 16px 28px rgba(0, 0, 0, 0.24);
+      }
+
+      .blanket::after {
+        content: "";
+        position: absolute;
+        inset: 14px 20px;
+        border-radius: 999px;
+        border: 1.6px dashed rgba(255, 238, 219, 0.24);
+      }
+
+      .cat {
+        position: absolute;
+        left: 50%;
+        bottom: 42px;
+        width: 250px;
+        height: 178px;
+        transform: translateX(-50%);
+      }
+
+      .body {
+        position: absolute;
+        left: 42px;
+        bottom: 16px;
+        width: 168px;
+        height: 114px;
+        border-radius: 56% 58% 46% 44%;
+        background:
+          linear-gradient(180deg, #f3c989 0%, #e7ab63 58%, #c98542 100%);
+        box-shadow:
+          inset 0 10px 16px rgba(255, 243, 219, 0.3),
+          0 18px 22px rgba(0, 0, 0, 0.18);
+      }
+
+      .body::before {
+        content: "";
+        position: absolute;
+        left: 18px;
+        right: 30px;
+        top: 22px;
+        height: 26px;
+        border-radius: 999px;
+        background: rgba(255, 242, 214, 0.2);
+      }
+
+      .tail {
+        position: absolute;
+        right: 18px;
+        bottom: 58px;
+        width: 92px;
+        height: 92px;
+        border: 18px solid #d28d47;
+        border-left-color: transparent;
+        border-bottom-color: transparent;
+        border-radius: 50%;
+        transform: rotate(18deg);
+        filter: drop-shadow(0 10px 14px rgba(0, 0, 0, 0.16));
+      }
+
+      .head {
+        position: absolute;
+        left: 12px;
+        bottom: 74px;
+        width: 86px;
+        height: 72px;
+        border-radius: 50% 48% 46% 44%;
+        background: linear-gradient(180deg, #f6cf95 0%, #e9b470 58%, #cf8c49 100%);
+        box-shadow: inset 0 8px 10px rgba(255, 244, 221, 0.24);
+      }
+
+      .ear {
+        position: absolute;
+        top: -22px;
+        width: 28px;
+        height: 34px;
+        background: #e7ab63;
+        clip-path: polygon(50% 0, 100% 100%, 0 100%);
+      }
+
+      .ear.left {
+        left: 8px;
+        transform: rotate(-12deg);
+      }
+
+      .ear.right {
+        right: 10px;
+        transform: rotate(16deg);
+      }
+
+      .ear::after {
+        content: "";
+        position: absolute;
+        left: 7px;
+        right: 7px;
+        bottom: 6px;
+        top: 8px;
+        background: rgba(244, 184, 193, 0.78);
+        clip-path: polygon(50% 0, 100% 100%, 0 100%);
+      }
+
+      .face {
+        position: absolute;
+        inset: 0;
+      }
+
+      .eye {
+        position: absolute;
+        top: 34px;
+        width: 18px;
+        height: 10px;
+        border-bottom: 3px solid #6e4b2f;
+        border-radius: 0 0 20px 20px;
+      }
+
+      .eye.left {
+        left: 20px;
+      }
+
+      .eye.right {
+        right: 20px;
+      }
+
+      .nose {
+        position: absolute;
+        left: 50%;
+        top: 42px;
+        width: 12px;
+        height: 9px;
+        background: #e796a3;
+        clip-path: polygon(50% 100%, 0 0, 100% 0);
+        transform: translateX(-50%);
+      }
+
+      .mouth {
+        position: absolute;
+        left: 50%;
+        top: 50px;
+        width: 24px;
+        height: 14px;
+        border-bottom: 2px solid #81573a;
+        border-radius: 0 0 20px 20px;
+        transform: translateX(-50%);
+      }
+
+      .whiskers,
+      .whiskers::before,
+      .whiskers::after {
+        position: absolute;
+        height: 1.6px;
+        background: rgba(255, 249, 238, 0.7);
+        border-radius: 999px;
+      }
+
+      .whiskers {
+        top: 48px;
+        left: -18px;
+        width: 28px;
+        transform: rotate(12deg);
+      }
+
+      .whiskers::before,
+      .whiskers::after {
+        content: "";
+        width: 30px;
+        left: 0;
+      }
+
+      .whiskers::before {
+        top: -8px;
+        transform: rotate(-10deg);
+      }
+
+      .whiskers::after {
+        top: 8px;
+        transform: rotate(10deg);
+      }
+
+      .whiskers.right {
+        left: auto;
+        right: -18px;
+        transform: rotate(-12deg);
+      }
+
+      .paw {
+        position: absolute;
+        bottom: 18px;
+        width: 30px;
+        height: 22px;
+        border-radius: 999px;
+        background: #edbc7f;
+      }
+
+      .paw.one {
+        left: 78px;
+      }
+
+      .paw.two {
+        left: 110px;
+      }
+
+      .spark {
+        position: absolute;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        border: 1px solid rgba(255, 238, 210, 0.32);
+        animation: float 8s ease-in-out infinite;
+      }
+
+      .spark.one {
+        left: 112px;
+        top: 138px;
+      }
+
+      .spark.two {
+        right: 138px;
+        top: 198px;
+        animation-delay: 2s;
+      }
+
+      .copy {
+        position: relative;
+        padding: 72px 60px 64px 56px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 26px;
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        width: fit-content;
+        padding: 10px 16px;
+        border-radius: 999px;
+        border: 1px solid var(--line);
+        color: var(--ink-soft);
+        background: rgba(255, 247, 235, 0.04);
+        font-size: 0.8rem;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+      }
+
+      .eyebrow::before {
+        content: "";
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: linear-gradient(180deg, var(--gold), var(--blush));
+        box-shadow: 0 0 16px rgba(244, 200, 141, 0.46);
+      }
+
+      h1 {
+        font-family: "Cormorant Garamond", serif;
+        font-size: clamp(3.3rem, 7vw, 5.7rem);
+        line-height: 0.92;
+        letter-spacing: -0.04em;
+        max-width: 9ch;
+      }
+
+      .lead {
+        max-width: 36rem;
+        color: var(--ink-soft);
+        font-size: 1.05rem;
+        line-height: 1.8;
+      }
+
+      .note {
+        position: relative;
+        max-width: 37rem;
+        padding: 28px 28px 30px;
+        border-radius: 26px;
+        background:
+          linear-gradient(180deg, rgba(255, 252, 247, 0.08), rgba(255, 252, 247, 0.03)),
+          var(--glass);
+        border: 1px solid rgba(255, 245, 231, 0.12);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      }
+
+      .note::before {
+        content: "mrr";
+        position: absolute;
+        right: 22px;
+        top: -14px;
+        padding: 8px 14px;
+        border-radius: 999px;
+        background: linear-gradient(135deg, rgba(244, 200, 141, 0.22), rgba(239, 179, 191, 0.2));
+        border: 1px solid rgba(255, 244, 226, 0.16);
+        font-size: 0.72rem;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--pearl);
+      }
+
+      .note p {
+        font-size: 1.04rem;
+        line-height: 1.9;
+        color: var(--pearl);
+      }
+
+      .note p + p {
+        margin-top: 16px;
+      }
+
+      .meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+
+      .pill {
+        padding: 10px 14px;
+        border-radius: 999px;
+        border: 1px solid var(--line);
+        background: rgba(255, 247, 235, 0.04);
+        color: var(--ink-soft);
+        font-size: 0.9rem;
+      }
+
+      .signature {
+        color: var(--gold);
+        font-family: "Cormorant Garamond", serif;
+        font-size: 1.55rem;
+        letter-spacing: 0.02em;
+      }
+
+      .floating-heart {
+        position: absolute;
+        color: rgba(244, 200, 141, 0.36);
+        font-size: 18px;
+        animation: float 10s ease-in-out infinite;
+      }
+
+      .floating-heart.one {
+        top: 86px;
+        right: 104px;
+      }
+
+      .floating-heart.two {
+        bottom: 76px;
+        right: 56px;
+        animation-delay: 2.6s;
+      }
+
+      @keyframes twinkle {
+        0%,
+        100% {
+          opacity: 0.34;
+          transform: scale(0.9);
+        }
+
+        50% {
+          opacity: 1;
+          transform: scale(1.2);
+        }
+      }
+
+      @keyframes breathe {
+        0%,
+        100% {
+          transform: scale(1);
+          opacity: 0.62;
+        }
+
+        50% {
+          transform: scale(1.06);
+          opacity: 1;
+        }
+      }
+
+      @keyframes drift {
+        0%,
+        100% {
+          transform: translate3d(0, 0, 0);
+        }
+
+        50% {
+          transform: translate3d(-18px, -16px, 0);
+        }
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0);
+          opacity: 0.46;
+        }
+
+        50% {
+          transform: translateY(-12px);
+          opacity: 0.9;
+        }
+      }
+
+      @media (max-width: 920px) {
+        .shell {
+          grid-template-columns: 1fr;
+        }
+
+        .scene {
+          min-height: 420px;
+        }
+
+        .copy {
+          padding: 42px 24px 34px;
+        }
+
+        .window {
+          inset: 78px 34px 134px;
+        }
+
+        .curtain {
+          width: 86px;
+        }
+
+        .moon {
+          right: 42px;
+        }
+      }
+
+      @media (max-width: 560px) {
+        body {
+          padding: 14px;
+        }
+
+        .shell {
+          border-radius: 26px;
+          min-height: auto;
+        }
+
+        .scene {
+          min-height: 360px;
+        }
+
+        .window {
+          inset: 72px 18px 118px;
+          border-width: 9px;
+        }
+
+        .curtain {
+          width: 62px;
+          top: 60px;
+          bottom: 112px;
+        }
+
+        .moon {
+          width: 92px;
+          height: 92px;
+          top: 54px;
+          right: 28px;
+        }
+
+        .moon-glow {
+          width: 150px;
+          height: 150px;
+          top: 28px;
+          right: 8px;
+        }
+
+        .cat {
+          width: 214px;
+          transform: translateX(-50%) scale(0.9);
+        }
+
+        h1 {
+          max-width: 10ch;
+          font-size: clamp(2.8rem, 15vw, 4.2rem);
+        }
+
+        .lead,
+        .note p {
+          font-size: 0.98rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="aurora" aria-hidden="true"></div>
+    <main class="shell">
+      <section class="scene" aria-hidden="true">
+        <div class="moon-glow"></div>
+        <div class="moon"></div>
+        <div class="curtain left"></div>
+        <div class="curtain right"></div>
+        <div class="window">
+          <div class="stars">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+          <div class="cityline"></div>
+          <div class="spark one"></div>
+          <div class="spark two"></div>
+          <div class="sill"></div>
+          <div class="blanket"></div>
+          <div class="cat">
+            <div class="tail"></div>
+            <div class="body"></div>
+            <div class="head">
+              <div class="ear left"></div>
+              <div class="ear right"></div>
+              <div class="face">
+                <div class="eye left"></div>
+                <div class="eye right"></div>
+                <div class="nose"></div>
+                <div class="mouth"></div>
+                <div class="whiskers"></div>
+                <div class="whiskers right"></div>
+              </div>
+            </div>
+            <div class="paw one"></div>
+            <div class="paw two"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="copy">
+        <span class="floating-heart one">✦</span>
+        <span class="floating-heart two">♡</span>
+        <div class="eyebrow">wieczorna kartka dla mojej dziewczyny</div>
+        <h1>Kocie dobranoc dla Ciebie</h1>
+        <p class="lead">
+          Na dzisiaj coś cichego i miękkiego. Taka mała strona, która ma usiąść obok Ciebie jak
+          senny kot i przypomnieć, że jesteś bardzo kochana.
+        </p>
+
+        <div class="note">
+          <p>
+            Kochanie, życzę Ci wieczoru lekkiego jak mruczenie pod kołdrą i spokojnego jak kot,
+            który już znalazł swoje ulubione miejsce do spania.
+          </p>
+          <p>
+            Niech wszystko, co dziś było męczące, po prostu się odsunie. Niech zostanie tylko
+            ciepło, cisza, trochę miękkiego światła i myśl, że ktoś bardzo czule o Tobie myśli.
+          </p>
+          <p>
+            Gdybym mógł być teraz obok, to przykryłbym Cię kocykiem, pogłaskał po włosach i
+            pilnował, żeby ten wieczór był dla Ciebie łagodny, słodki i całkiem bezpieczny.
+          </p>
+          <p>
+            Śpij sobie pięknie, mój mały kotku. Niech noc Cię utuli, a sny zrobią dla Ciebie
+            najprzytulniejsze miejsce na świecie.
+          </p>
+        </div>
+
+        <div class="meta">
+          <span class="pill">tryb: ciche mruczenie</span>
+          <span class="pill">na dziś: dużo czułości</span>
+          <span class="pill">status: jesteś bardzo ważna</span>
+        </div>
+
+        <p class="signature">dobranoc, śliczna ♡</p>
+      </section>
+    </main>
+  </body>
+</html>
