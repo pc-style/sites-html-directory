@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matcha Kotek dla Ciebie</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --matcha-light: #e8f0e4;
+            --matcha: #c3d8b4;
+            --matcha-dark: #8ba976;
+            --mocha-light: #f5ece5;
+            --mocha: #d2baa4;
+            --mocha-dark: #8c6e58;
+            --cream: #fbf9f6;
+            --text-dark: #4a403a;
+            --text-light: #796c64;
+            --blush: #f4bac1;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--matcha-light);
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            background-image:
+                radial-gradient(circle at 15% 50%, rgba(210, 186, 164, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 85% 30%, rgba(139, 169, 118, 0.1) 0%, transparent 40%);
+            overflow-x: hidden;
+        }
+
+        .container {
+            background-color: var(--cream);
+            border-radius: 40px;
+            box-shadow: 0 20px 50px rgba(139, 169, 118, 0.2),
+                        inset 0 0 0 8px rgba(255, 255, 255, 0.8);
+            max-width: 900px;
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Decoration elements */
+        .decoration {
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: var(--matcha);
+            opacity: 0.2;
+            top: -40px;
+            right: -40px;
+            filter: blur(20px);
+        }
+
+        .decoration-2 {
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: var(--mocha);
+            opacity: 0.15;
+            bottom: -50px;
+            left: -50px;
+            filter: blur(25px);
+        }
+
+        .art-section {
+            background: linear-gradient(135deg, var(--matcha-light) 0%, var(--cream) 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 4rem 2rem;
+            position: relative;
+        }
+
+        .content-section {
+            padding: 4rem 3rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        h1 {
+            font-family: 'DM Serif Display', serif;
+            font-size: 3.5rem;
+            line-height: 1.1;
+            color: var(--matcha-dark);
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .subtitle {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--mocha-dark);
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--text-light);
+            margin-bottom: 1.5rem;
+        }
+
+        .highlight {
+            color: var(--mocha-dark);
+            font-weight: 500;
+            font-style: italic;
+        }
+
+        .sign-off {
+            margin-top: 2rem;
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.5rem;
+            color: var(--matcha-dark);
+            border-top: 1px solid rgba(210, 186, 164, 0.3);
+            padding-top: 1.5rem;
+        }
+
+        /* CSS Art - Cat in a Cup */
+        .scene {
+            position: relative;
+            width: 300px;
+            height: 350px;
+        }
+
+        .steam-container {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 1;
+        }
+
+        .steam {
+            width: 8px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 10px;
+            filter: blur(4px);
+            animation: rise 3s infinite ease-in-out;
+            opacity: 0;
+        }
+
+        .steam:nth-child(1) { animation-delay: 0s; height: 50px; }
+        .steam:nth-child(2) { animation-delay: 0.8s; height: 60px; }
+        .steam:nth-child(3) { animation-delay: 1.6s; height: 45px; }
+
+        @keyframes rise {
+            0% { transform: translateY(20px) scaleX(1); opacity: 0; }
+            50% { opacity: 0.8; }
+            100% { transform: translateY(-60px) scaleX(1.5); opacity: 0; }
+        }
+
+        .cup {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 220px;
+            height: 160px;
+            background: var(--mocha);
+            border-radius: 15px 15px 80px 80px;
+            box-shadow: inset -20px -10px 0 rgba(0, 0, 0, 0.05),
+                        10px 20px 30px rgba(139, 169, 118, 0.15);
+            z-index: 10;
+            overflow: hidden;
+        }
+
+        .cup-top {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 220px;
+            height: 30px;
+            background: var(--mocha-light);
+            border-radius: 50%;
+            z-index: 11;
+        }
+
+        .cup-handle {
+            position: absolute;
+            bottom: 80px;
+            right: 0px;
+            width: 60px;
+            height: 80px;
+            border: 20px solid var(--mocha);
+            border-radius: 50%;
+            z-index: 9;
+        }
+
+        .plate {
+            position: absolute;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 260px;
+            height: 30px;
+            background: var(--mocha-light);
+            border-radius: 50%;
+            box-shadow: 0 10px 20px rgba(139, 169, 118, 0.2);
+            z-index: 8;
+        }
+
+        .cat {
+            position: absolute;
+            bottom: 160px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 140px;
+            height: 120px;
+            background: var(--matcha);
+            border-radius: 70px 70px 0 0;
+            z-index: 5;
+            animation: peek 5s infinite ease-in-out;
+            box-shadow: inset -15px 0 0 rgba(0,0,0,0.05);
+        }
+
+        @keyframes peek {
+            0%, 100% { transform: translateX(-50%) translateY(20px); }
+            50% { transform: translateX(-50%) translateY(0); }
+        }
+
+        .ear {
+            position: absolute;
+            top: -20px;
+            width: 0;
+            height: 0;
+            border-left: 25px solid transparent;
+            border-right: 25px solid transparent;
+            border-bottom: 40px solid var(--matcha);
+        }
+
+        .ear.left { left: 5px; transform: rotate(-15deg); }
+        .ear.right { right: 5px; transform: rotate(15deg); }
+
+        .ear-inner {
+            position: absolute;
+            top: 15px;
+            left: -10px;
+            width: 0;
+            height: 0;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-bottom: 20px solid var(--blush);
+        }
+
+        .face {
+            position: absolute;
+            top: 40px;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .eye {
+            position: absolute;
+            top: 20px;
+            width: 12px;
+            height: 12px;
+            background: var(--text-dark);
+            border-radius: 50%;
+            animation: blink 4s infinite;
+        }
+
+        .eye::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            width: 4px;
+            height: 4px;
+            background: white;
+            border-radius: 50%;
+        }
+
+        .eye.left { left: 35px; }
+        .eye.right { right: 35px; }
+
+        @keyframes blink {
+            0%, 46%, 48%, 100% { transform: scaleY(1); }
+            47% { transform: scaleY(0.1); }
+        }
+
+        .nose {
+            position: absolute;
+            top: 35px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 10px;
+            height: 6px;
+            background: var(--mocha-dark);
+            border-radius: 50%;
+        }
+
+        .mouth {
+            position: absolute;
+            top: 45px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 10px;
+            border-bottom: 2px solid var(--text-dark);
+            border-radius: 0 0 20px 20px;
+        }
+
+        .blush {
+            position: absolute;
+            top: 30px;
+            width: 15px;
+            height: 10px;
+            background: var(--blush);
+            border-radius: 50%;
+            opacity: 0.6;
+        }
+
+        .blush.left { left: 20px; }
+        .blush.right { right: 20px; }
+
+        .paw {
+            position: absolute;
+            bottom: -15px;
+            width: 35px;
+            height: 30px;
+            background: var(--matcha);
+            border-radius: 20px;
+            z-index: 15;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+            animation: tap 4s infinite ease-in-out;
+        }
+
+        .paw::after, .paw::before {
+            content: '';
+            position: absolute;
+            bottom: 5px;
+            width: 4px;
+            height: 10px;
+            background: rgba(0,0,0,0.1);
+            border-radius: 5px;
+        }
+
+        .paw::before { left: 10px; }
+        .paw::after { right: 10px; }
+
+        .paw.left {
+            left: 50px;
+            transform: rotate(-10deg);
+            animation-delay: 0.5s;
+        }
+        .paw.right {
+            right: 50px;
+            transform: rotate(10deg);
+        }
+
+        @keyframes tap {
+            0%, 100% { transform: translateY(0) rotate(var(--rot, 10deg)); }
+            50% { transform: translateY(-5px) rotate(var(--rot, 10deg)); }
+        }
+
+        .paw.left { --rot: -10deg; }
+        .paw.right { --rot: 10deg; }
+
+        .tea-bag {
+            position: absolute;
+            bottom: 60px;
+            left: 40px;
+            width: 25px;
+            height: 35px;
+            background: rgba(255,255,255,0.9);
+            border-radius: 2px;
+            z-index: 12;
+            transform: rotate(-15deg);
+        }
+
+        .tea-bag::after {
+            content: 'matcha';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-90deg);
+            font-size: 8px;
+            color: var(--matcha-dark);
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        .tea-string {
+            position: absolute;
+            bottom: 95px;
+            left: 55px;
+            width: 1px;
+            height: 80px;
+            background: var(--mocha-dark);
+            z-index: 6;
+            transform: rotate(15deg);
+        }
+
+        .leaves {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .leaf {
+            position: absolute;
+            background: var(--matcha);
+            border-radius: 0 15px 0 15px;
+            opacity: 0.6;
+        }
+
+        .leaf-1 { width: 20px; height: 20px; top: 10%; left: 15%; transform: rotate(45deg); }
+        .leaf-2 { width: 15px; height: 15px; top: 80%; left: 85%; transform: rotate(-20deg); }
+        .leaf-3 { width: 25px; height: 25px; top: 70%; left: 10%; transform: rotate(70deg); background: var(--matcha-dark); }
+
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+                border-radius: 30px;
+            }
+
+            .art-section {
+                padding: 3rem 1rem 1rem;
+            }
+
+            .content-section {
+                padding: 2rem 2rem 3rem;
+            }
+
+            h1 {
+                font-size: 2.8rem;
+            }
+
+            .scene {
+                transform: scale(0.85);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="decoration"></div>
+        <div class="decoration-2"></div>
+
+        <div class="art-section">
+            <div class="leaves">
+                <div class="leaf leaf-1"></div>
+                <div class="leaf leaf-2"></div>
+                <div class="leaf leaf-3"></div>
+            </div>
+            <div class="scene">
+                <div class="steam-container">
+                    <div class="steam"></div>
+                    <div class="steam"></div>
+                    <div class="steam"></div>
+                </div>
+
+                <div class="tea-string"></div>
+
+                <div class="cat">
+                    <div class="ear left"><div class="ear-inner"></div></div>
+                    <div class="ear right"><div class="ear-inner"></div></div>
+                    <div class="face">
+                        <div class="blush left"></div>
+                        <div class="blush right"></div>
+                        <div class="eye left"></div>
+                        <div class="eye right"></div>
+                        <div class="nose"></div>
+                        <div class="mouth"></div>
+                    </div>
+                </div>
+
+                <div class="paw left"></div>
+                <div class="paw right"></div>
+
+                <div class="cup-top"></div>
+                <div class="cup"></div>
+                <div class="cup-handle"></div>
+                <div class="tea-bag"></div>
+                <div class="plate"></div>
+            </div>
+        </div>
+
+        <div class="content-section">
+            <div class="subtitle">Dobre Słowo na Dziś</div>
+            <h1>Zatrzymaj się<br>na małe purrr...</h1>
+            <p>Nie wszystko musi być zrobione już, teraz, natychmiast. Pamiętaj, że nawet najbardziej zapracowane koty potrafią w ułamku sekundy odnaleźć idealną plamę słońca na podłodze i zapaść w drzemkę.</p>
+            <p>Dziś weź przykład z tego małego, zielonego przyjaciela w kubku matchy. Zaparz sobie coś dobrego, weź głęboki wdech i pozwól sobie na moment bez produktywności. <span class="highlight">Odpoczynek to nie lenistwo, to ładownie baterii na kolejne skoki po meblach!</span></p>
+            <p>Jesteś wspaniała i robisz świetną robotę. A teraz - czas na kawkę, matchę lub małe przeciągnięcie się.</p>
+
+            <div class="sign-off">
+                Ściskam miękko, mru! 🐾
+            </div>
+        </div>
+    </div>
+</body>
+</html>
