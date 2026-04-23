@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kocia Recepta na Dziś</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Nunito:wght@400;700;900&display=swap');
+
+        :root {
+            --bg-color: #fffaf0; /* floral white */
+            --primary: #ffb7b2; /* pastel pink */
+            --secondary: #e2f0cb; /* pastel green */
+            --accent: #ffdac1; /* peach */
+            --text-main: #4a4a4a;
+            --text-muted: #8c8c8c;
+            --ticket-bg: #ffffff;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: var(--bg-color);
+            background-image: radial-gradient(var(--accent) 2px, transparent 2px);
+            background-size: 30px 30px;
+            font-family: 'Nunito', sans-serif;
+            color: var(--text-main);
+            overflow: hidden;
+        }
+
+        .ticket {
+            position: relative;
+            background: var(--ticket-bg);
+            width: 90%;
+            max-width: 500px;
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+            border: 4px dashed var(--primary);
+            padding: 40px;
+            text-align: center;
+            transform: rotate(-2deg);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 10;
+        }
+
+        .ticket:hover {
+            transform: rotate(0deg) scale(1.02);
+        }
+
+        .ticket::before, .ticket::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 40px;
+            height: 40px;
+            background-color: var(--bg-color);
+            border-radius: 50%;
+            transform: translateY(-50%);
+            border: 4px dashed var(--primary);
+        }
+
+        .ticket::before {
+            left: -24px;
+            border-left-color: transparent;
+            border-top-color: transparent;
+            border-bottom-color: transparent;
+        }
+
+        .ticket::after {
+            right: -24px;
+            border-right-color: transparent;
+            border-top-color: transparent;
+            border-bottom-color: transparent;
+        }
+
+        .cat-illustration {
+            font-size: 80px;
+            margin-bottom: 10px;
+            animation: float 3s ease-in-out infinite;
+            display: inline-block;
+        }
+
+        h1 {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 2.8rem;
+            color: var(--primary);
+            margin: 0;
+            line-height: 1.2;
+            text-shadow: 2px 2px 0px rgba(255, 183, 178, 0.3);
+        }
+
+        .subtitle {
+            font-family: 'Fredoka', sans-serif;
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .prescription-list {
+            text-align: left;
+            background: var(--secondary);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .prescription-list::before {
+            content: 'Rx';
+            position: absolute;
+            top: -15px;
+            left: -15px;
+            background: var(--accent);
+            color: var(--text-main);
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 700;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            box-shadow: 2px 2px 0px rgba(0,0,0,0.1);
+        }
+
+        .prescription-list p {
+            margin: 10px 0;
+            font-size: 1.1rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .message {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .stamp {
+            position: absolute;
+            bottom: -20px;
+            right: -20px;
+            width: 100px;
+            height: 100px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 700;
+            font-size: 1rem;
+            transform: rotate(-15deg);
+            text-align: center;
+            line-height: 1.2;
+            box-shadow: 0 5px 15px rgba(255, 183, 178, 0.4);
+            border: 4px solid white;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .yarn-ball {
+            position: absolute;
+            font-size: 2rem;
+            opacity: 0.5;
+            z-index: 1;
+        }
+
+        .date {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            font-weight: 700;
+            border-bottom: 2px dashed var(--accent);
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- decorative background elements -->
+    <div class="yarn-ball" style="top: 10%; left: 10%; transform: rotate(20deg);">🧶</div>
+    <div class="yarn-ball" style="bottom: 15%; right: 15%; transform: rotate(-45deg);">🐟</div>
+    <div class="yarn-ball" style="top: 20%; right: 5%; font-size: 3rem;">🐾</div>
+    <div class="yarn-ball" style="bottom: 10%; left: 5%; font-size: 2.5rem; transform: rotate(15deg);">🥛</div>
+
+    <div class="ticket">
+        <div class="date">22.04.2026</div>
+        <div class="cat-illustration">😻</div>
+        <h1>Kocia Recepta</h1>
+        <div class="subtitle">na idealny dzień</div>
+
+        <div class="prescription-list">
+            <p><span>🐾</span> 3 dawki mruczenia (najlepiej w słońcu)</p>
+            <p><span>🧶</span> 1 długie przeciągnięcie się</p>
+            <p><span>💕</span> Niekończące się ilości przytulasków</p>
+        </div>
+
+        <div class="message">
+            Pamiętaj: jeśli coś idzie nie tak, po prostu zwiń się w kłębek i udawaj, że śpisz. Świat może poczekać, aż będziesz gotowa. Jesteś absolutnie purrr-fekcyjna!
+        </div>
+
+        <div class="stamp">WAŻNE<br>CAŁY<br>DZIEŃ</div>
+    </div>
+
+    <script>
+        document.querySelectorAll('.yarn-ball').forEach(el => {
+            el.addEventListener('mouseover', () => {
+                el.style.transform = `translate(${Math.random() * 40 - 20}px, ${Math.random() * 40 - 20}px) rotate(${Math.random() * 360}deg)`;
+                el.style.transition = 'all 0.5s ease';
+            });
+        });
+    </script>
+</body>
+</html>
