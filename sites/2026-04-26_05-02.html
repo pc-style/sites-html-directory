@@ -1,0 +1,394 @@
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Poranne Mruczenie</title>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,400..700,50&family=Outfit:wght@300;400;500&display=swap');
+
+      :root {
+        --sky-top: #e0c3fc;
+        --sky-mid: #f6d1e4;
+        --sky-bottom: #fff1e6;
+        --text-main: #4a3b52;
+        --text-soft: #846a8c;
+        --card-bg: rgba(255, 255, 255, 0.6);
+        --moon-glow: #fff1ce;
+        --moon-body: #ffe8ab;
+        --cat-base: #ffd8b1;
+        --cat-dark: #ffb875;
+        --cat-accent: #f9a8d4;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      html, body {
+        height: 100%;
+        overflow-x: hidden;
+      }
+
+      body {
+        font-family: 'Outfit', sans-serif;
+        color: var(--text-main);
+        background: linear-gradient(180deg, var(--sky-top) 0%, var(--sky-mid) 40%, var(--sky-bottom) 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem;
+      }
+
+      /* Background clouds and stars */
+      .bg-fx {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      .star {
+        position: absolute;
+        background: white;
+        border-radius: 50%;
+        animation: twinkle 4s infinite alternate;
+      }
+
+      .star:nth-child(1) { top: 15%; left: 20%; width: 4px; height: 4px; animation-delay: 0s; }
+      .star:nth-child(2) { top: 25%; left: 80%; width: 5px; height: 5px; animation-delay: 1s; }
+      .star:nth-child(3) { top: 10%; left: 60%; width: 3px; height: 3px; animation-delay: 2s; }
+      .star:nth-child(4) { top: 40%; left: 10%; width: 6px; height: 6px; animation-delay: 0.5s; }
+
+      .cloud {
+        position: absolute;
+        background: rgba(255, 255, 255, 0.4);
+        border-radius: 100px;
+        filter: blur(10px);
+        animation: drift 30s linear infinite;
+      }
+
+      .cloud:nth-child(5) { top: 20%; left: -20%; width: 300px; height: 60px; }
+      .cloud:nth-child(6) { top: 50%; left: -30%; width: 400px; height: 80px; animation-duration: 45s; animation-delay: -10s; }
+
+      /* Main container */
+      .container {
+        position: relative;
+        z-index: 1;
+        width: 100%;
+        max-width: 1000px;
+        min-height: 600px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 3rem;
+        background: var(--card-bg);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-radius: 40px;
+        border: 1px solid rgba(255, 255, 255, 0.8);
+        box-shadow: 0 30px 60px rgba(111, 74, 137, 0.15), inset 0 0 0 2px rgba(255, 255, 255, 0.5);
+        padding: 3rem;
+        overflow: hidden;
+      }
+
+      /* CSS Art section */
+      .art-section {
+        position: relative;
+        border-radius: 30px;
+        background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.4) 0%, transparent 70%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 400px;
+      }
+
+      .moon-container {
+        position: relative;
+        width: 300px;
+        height: 300px;
+        animation: float 6s ease-in-out infinite;
+      }
+
+      .moon {
+        position: absolute;
+        width: 250px;
+        height: 250px;
+        border-radius: 50%;
+        box-shadow: inset -30px 0 0 0 var(--moon-body);
+        left: 20px;
+        top: 20px;
+        filter: drop-shadow(0 0 40px rgba(255, 241, 206, 0.8));
+        transform: rotate(-30deg);
+      }
+
+      .cat {
+        position: absolute;
+        width: 120px;
+        height: 80px;
+        bottom: 55px;
+        left: 110px;
+        transform: rotate(-5deg);
+        animation: breathe 4s ease-in-out infinite;
+      }
+
+      .cat-body {
+        position: absolute;
+        bottom: 0;
+        width: 100px;
+        height: 50px;
+        background: var(--cat-base);
+        border-radius: 60px 60px 20px 20px;
+        box-shadow: inset -10px -10px 0 rgba(255, 184, 117, 0.4);
+      }
+
+      .cat-head {
+        position: absolute;
+        bottom: 10px;
+        left: -15px;
+        width: 45px;
+        height: 40px;
+        background: var(--cat-base);
+        border-radius: 50%;
+        box-shadow: inset -5px -5px 0 rgba(255, 184, 117, 0.4);
+        transform: rotate(-15deg);
+      }
+
+      .cat-ear-l, .cat-ear-r {
+        position: absolute;
+        width: 0;
+        height: 0;
+        border-left: 10px solid transparent;
+        border-right: 10px solid transparent;
+        border-bottom: 20px solid var(--cat-base);
+        top: -10px;
+      }
+      .cat-ear-l { left: 0px; transform: rotate(-30deg); }
+      .cat-ear-r { left: 25px; transform: rotate(30deg); }
+
+      .cat-ear-inner {
+        position: absolute;
+        border-left: 5px solid transparent;
+        border-right: 5px solid transparent;
+        border-bottom: 10px solid var(--cat-accent);
+        top: 6px;
+        left: -5px;
+      }
+
+      .cat-tail {
+        position: absolute;
+        bottom: -5px;
+        right: -10px;
+        width: 60px;
+        height: 20px;
+        border: 15px solid var(--cat-base);
+        border-bottom: none;
+        border-right: none;
+        border-radius: 40px 0 0 0;
+        transform: rotate(45deg);
+      }
+
+      .cat-face {
+        position: absolute;
+        inset: 0;
+      }
+
+      .cat-eye {
+        position: absolute;
+        width: 8px;
+        height: 3px;
+        border-bottom: 2px solid #a37c59;
+        border-radius: 0 0 10px 10px;
+        top: 20px;
+      }
+      .cat-eye-l { left: 10px; }
+      .cat-eye-r { left: 25px; }
+
+      .cat-nose {
+        position: absolute;
+        width: 6px;
+        height: 4px;
+        background: var(--cat-accent);
+        border-radius: 50%;
+        top: 26px;
+        left: 19px;
+      }
+
+      .zzz {
+        position: absolute;
+        color: #846a8c;
+        font-family: 'Outfit', sans-serif;
+        font-weight: 500;
+        font-size: 14px;
+        opacity: 0;
+        animation: snore 4s infinite;
+      }
+      .z1 { top: -20px; left: -20px; animation-delay: 0s; }
+      .z2 { top: -40px; left: -5px; animation-delay: 1s; font-size: 18px; }
+      .z3 { top: -65px; left: 15px; animation-delay: 2s; font-size: 24px; }
+
+      /* Text Section */
+      .text-section {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 2rem;
+      }
+
+      .badge {
+        align-self: flex-start;
+        padding: 0.5rem 1rem;
+        background: rgba(255, 255, 255, 0.5);
+        border: 1px solid rgba(255, 255, 255, 0.8);
+        border-radius: 20px;
+        font-size: 0.85rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--text-soft);
+        font-weight: 500;
+      }
+
+      h1 {
+        font-family: 'Fraunces', serif;
+        font-size: 3.5rem;
+        line-height: 1.1;
+        color: #4a3b52;
+        font-weight: 500;
+      }
+
+      .content-block {
+        position: relative;
+        padding: 2rem;
+        background: rgba(255, 255, 255, 0.4);
+        border-radius: 24px;
+        border: 1px solid rgba(255, 255, 255, 0.6);
+        color: var(--text-main);
+      }
+
+      .content-block::before {
+        content: '❝';
+        position: absolute;
+        top: -10px;
+        left: 20px;
+        font-size: 3rem;
+        color: rgba(249, 168, 212, 0.5);
+        font-family: 'Fraunces', serif;
+        line-height: 1;
+      }
+
+      p {
+        font-size: 1.1rem;
+        line-height: 1.6;
+        margin-bottom: 1rem;
+      }
+
+      p:last-child {
+        margin-bottom: 0;
+      }
+
+      .signature {
+        font-family: 'Fraunces', serif;
+        font-size: 1.5rem;
+        color: #b081a2;
+        font-style: italic;
+        margin-top: 1rem;
+      }
+
+      /* Animations */
+      @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-15px); }
+      }
+
+      @keyframes breathe {
+        0%, 100% { transform: scaleY(1) rotate(-5deg); }
+        50% { transform: scaleY(1.05) rotate(-5deg); }
+      }
+
+      @keyframes snore {
+        0% { opacity: 0; transform: translateY(0) scale(0.8); }
+        30% { opacity: 1; }
+        80% { opacity: 0; transform: translateY(-20px) scale(1.2); }
+        100% { opacity: 0; }
+      }
+
+      @keyframes twinkle {
+        0% { opacity: 0.3; transform: scale(0.8); }
+        100% { opacity: 1; transform: scale(1.2); }
+      }
+
+      @keyframes drift {
+        0% { transform: translateX(100vw); }
+        100% { transform: translateX(-100vw); }
+      }
+
+      /* Responsive */
+      @media (max-width: 800px) {
+        .container {
+          grid-template-columns: 1fr;
+          padding: 2rem;
+          gap: 2rem;
+        }
+        h1 { font-size: 2.5rem; }
+        .art-section { min-height: 300px; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="bg-fx">
+      <div class="star"></div>
+      <div class="star"></div>
+      <div class="star"></div>
+      <div class="star"></div>
+      <div class="cloud"></div>
+      <div class="cloud"></div>
+    </div>
+
+    <div class="container">
+      <div class="text-section">
+        <div class="badge">świt pełen mruczenia ✨</div>
+        <h1>Dzień dobry, kotku</h1>
+        <div class="content-block">
+          <p>
+            Zanim dzień na dobre się rozkręci, chciałem posłać Ci coś miękkiego i ciepłego,
+            zupełnie jak leniwie przeciągający się o świcie kot.
+          </p>
+          <p>
+            Niech ten poranek otuli Cię spokojem. Kiedy wstaniesz, przeciągnij się,
+            weź głęboki wdech i pomyśl, że jesteś dla mnie kimś bardzo wyjątkowym.
+            Niezależnie od tego, co przyniesie ten dzień, wiedz, że zawsze masz we mnie
+            swoje bezpieczne, przytulne miejsce.
+          </p>
+          <p>
+            Uśmiechnij się do siebie w lustrze i pamiętaj, że ktoś od samego świtu o Tobie myśli
+            z ogromną czułością.
+          </p>
+        </div>
+        <div class="signature">miłego dnia, kochana 🌸</div>
+      </div>
+
+      <div class="art-section">
+        <div class="moon-container">
+          <div class="moon"></div>
+          <div class="cat">
+            <div class="cat-tail"></div>
+            <div class="cat-body"></div>
+            <div class="cat-head">
+              <div class="cat-ear-l"><div class="cat-ear-inner"></div></div>
+              <div class="cat-ear-r"><div class="cat-ear-inner"></div></div>
+              <div class="cat-face">
+                <div class="cat-eye cat-eye-l"></div>
+                <div class="cat-eye cat-eye-r"></div>
+                <div class="cat-nose"></div>
+              </div>
+            </div>
+            <div class="zzz z1">z</div>
+            <div class="zzz z2">z</div>
+            <div class="zzz z3">z</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
